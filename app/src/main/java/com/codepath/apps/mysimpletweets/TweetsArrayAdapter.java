@@ -33,10 +33,12 @@ import java.util.List;
          convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_tweet, parent, false);
       // find the subviews to fill with data in the template
       ImageView profileImage = (ImageView)convertView.findViewById(R.id.profile_image);
-      TextView username = (TextView)convertView.findViewById(R.id.username);
+      TextView name = (TextView)convertView.findViewById(R.id.name);
+      TextView screenName = (TextView)convertView.findViewById(R.id.screen_name);
       TextView body = (TextView)convertView.findViewById(R.id.body);
       // populate data into the subviews
-      username.setText(tweet.getUser().getScreenName());
+      name.setText(tweet.getUser().getName());
+      screenName.setText("@" + tweet.getUser().getScreenName());
       body.setText(tweet.getBody());
       // clear out the old image for a recycled view
       profileImage.setImageResource(android.R.color.transparent);

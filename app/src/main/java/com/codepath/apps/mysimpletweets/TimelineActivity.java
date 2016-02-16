@@ -60,7 +60,6 @@ public class TimelineActivity extends AppCompatActivity {
             Log.d("NGUYEN", response.toString());
             List<Tweet> tweets = Tweet.fromJSONArray(response);
             mAdapter.addAll(tweets);
-            Log.d("NGUYEN", tweets.toString());
          }
 
          @Override
