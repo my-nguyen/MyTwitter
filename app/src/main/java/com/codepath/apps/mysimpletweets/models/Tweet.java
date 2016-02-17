@@ -12,14 +12,14 @@ import java.util.List;
  */
 // this class parses the JSON and stores the data, as well as encapsulates state or display logic
 public class Tweet {
-   private String body;
+   private String text;
    // unique database id for the tweet
    private long uid;
    private User user;
    private String createdAt;
 
-   public String getBody() {
-      return body;
+   public String getText() {
+      return text;
    }
 
    public long getUid() {
@@ -37,7 +37,7 @@ public class Tweet {
    @Override
    public String toString() {
       StringBuilder builder = new StringBuilder();
-      builder.append("<").append(body).append("> <").append(uid).append("> <").append(createdAt)
+      builder.append("<").append(text).append("> <").append(uid).append("> <").append(createdAt)
             .append(">\n     ").append(user);
       return builder.toString();
    }
@@ -46,7 +46,7 @@ public class Tweet {
    public static Tweet fromJSON(JSONObject jsonObject) {
       Tweet tweet = new Tweet();
       try {
-         tweet.body = jsonObject.getString("text");
+         tweet.text = jsonObject.getString("text");
          tweet.uid = jsonObject.getLong("id");
          tweet.createdAt = jsonObject.getString("created_at");
          tweet.user = User.fromJson(jsonObject.getJSONObject("user"));

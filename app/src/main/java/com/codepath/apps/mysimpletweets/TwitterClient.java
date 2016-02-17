@@ -25,7 +25,7 @@ import com.loopj.android.http.RequestParams;
  */
 public class TwitterClient extends OAuthBaseClient {
 	public static final Class<? extends Api> REST_API_CLASS = TwitterApi.class;
-	public static final String REST_URL = "https://api.twitter.com/1.1/";
+	public static final String REST_URL = "https://api.twitter.com/1.1";
 	public static final String REST_CONSUMER_KEY = "jP0T1NzCdK3ZHOBLTv2BK3ByW";
 	public static final String REST_CONSUMER_SECRET = "FBXOAXVvOyeNrjGpkiXZTlyTTMCWlDUrWkcZ9fOCCNaFdTPXLG";
 		public static final String REST_CALLBACK_URL = "oauth://cpsimpletweets";
@@ -55,5 +55,11 @@ public class TwitterClient extends OAuthBaseClient {
          params.put("max_id", maxId);
       // execute the request
       getClient().get(apiUrl, params, handler);
+   }
+
+   public void getUserCredentials(AsyncHttpResponseHandler handler) {
+      String apiUrl = getApiUrl("account/verify_credentials.json");
+      // execute the request
+      getClient().get(apiUrl, null, handler);
    }
 }

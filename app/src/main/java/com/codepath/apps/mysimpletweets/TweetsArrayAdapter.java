@@ -2,7 +2,6 @@ package com.codepath.apps.mysimpletweets;
 
 import android.content.Context;
 import android.text.format.DateUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,12 +41,12 @@ import java.util.Locale;
       TextView name = (TextView)convertView.findViewById(R.id.name);
       TextView screenName = (TextView)convertView.findViewById(R.id.screen_name);
       TextView timeAgo = (TextView)convertView.findViewById(R.id.time_ago);
-      TextView body = (TextView)convertView.findViewById(R.id.body);
+      TextView body = (TextView)convertView.findViewById(R.id.text);
       // populate data into the subviews
       name.setText(tweet.getUser().getName());
       screenName.setText("@" + tweet.getUser().getScreenName());
       timeAgo.setText(abbreviate(getRelativeTimeAgo(tweet.getCreatedAt())));
-      body.setText(tweet.getBody());
+      body.setText(tweet.getText());
       // clear out the old image for a recycled view
       profileImage.setImageResource(android.R.color.transparent);
       Picasso.with(getContext()).load(tweet.getUser().getProfileImageUrl()).into(profileImage);

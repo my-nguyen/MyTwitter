@@ -1,5 +1,6 @@
 package com.codepath.apps.mysimpletweets;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -8,6 +9,7 @@ import android.view.MenuItem;
 import android.widget.ListView;
 
 import com.codepath.apps.mysimpletweets.models.Tweet;
+import com.codepath.apps.mysimpletweets.models.User;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
 import org.apache.http.Header;
@@ -23,11 +25,13 @@ public class TimelineActivity extends AppCompatActivity {
    private TweetsArrayAdapter mAdapter;
    private ListView           mListView;
    private long               mLowestId;
+   private User               mUser = null;
 
    @Override
    protected void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
       setContentView(R.layout.activity_timeline);
+
       // find the ListView
       mListView = (ListView)findViewById(R.id.tweets_view);
       // Attach the listener to the AdapterView onCreate
@@ -52,16 +56,25 @@ public class TimelineActivity extends AppCompatActivity {
       // populate the timeline; maxId = 0 tells Twitter to get only the first 25 tweets
       mLowestId = 0;
       populateTimeline();
+      getUserCredentials();
    }
 
    @Override
    public boolean onCreateOptionsMenu(Menu menu) {
-      return super.onCreateOptionsMenu(menu);
+      getMenuInflater().inflate(R.menu.timeline, menu);
+      return true;
    }
 
    @Override
    public boolean onOptionsItemSelected(MenuItem item) {
-      return super.onOptionsItemSelected(item);
+      switch (item.getItemId()) {
+         case R.id.compose:
+            Intent intent = ComposeActivity.newIntent(this, mUser);
+            startActivity(intent);
+            return true;
+         default:
+            return super.onOptionsItemSelected(item);
+      }
    }
 
    private void populateTimeline() {
@@ -90,5 +103,15 @@ public class TimelineActivity extends AppCompatActivity {
          if (lowest > tweets.get(i).getUid())
             lowest = tweets.get(i).getUid();
       return lowest;
+   }
+
+   private void getUserCredentials() {
+      mClient.getUserCredentials(new JsonHttpResponseHandler() {
+         @Override
+         public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+            mUser = User.fromJson(response);
+            Log.d("NGUYEN", mUser.toString());
+         }
+      });
    }
 }
