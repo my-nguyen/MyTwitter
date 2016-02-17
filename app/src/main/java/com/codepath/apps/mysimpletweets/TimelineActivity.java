@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TimelineActivity extends AppCompatActivity {
+   private static final int   REQUEST_CODE = 100;
    private TwitterClient      mClient;
    private List<Tweet>        mTweets;
    private TweetsArrayAdapter mAdapter;
@@ -70,10 +71,20 @@ public class TimelineActivity extends AppCompatActivity {
       switch (item.getItemId()) {
          case R.id.compose:
             Intent intent = ComposeActivity.newIntent(this, mUser);
-            startActivity(intent);
+            startActivityForResult(intent, REQUEST_CODE);
             return true;
          default:
             return super.onOptionsItemSelected(item);
+      }
+   }
+
+   @Override
+   protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+      if (resultCode == RESULT_OK && requestCode == REQUEST_CODE) {
+         // extract the Tweet created in the ComposeActivity
+         Tweet tweet = (Tweet)data.getExtras().getSerializable("TWEET_OUT");
+         // add the Tweet at the very first position in the adapter
+         mAdapter.insert(tweet, 0);
       }
    }
 
@@ -98,10 +109,10 @@ public class TimelineActivity extends AppCompatActivity {
    }
 
    private long lowestId(List<Tweet> tweets) {
-      long lowest = tweets.get(0).getUid();
+      long lowest = tweets.get(0).uid;
       for (int i = 1; i < tweets.size(); i++)
-         if (lowest > tweets.get(i).getUid())
-            lowest = tweets.get(i).getUid();
+         if (lowest > tweets.get(i).uid)
+            lowest = tweets.get(i).uid;
       return lowest;
    }
 

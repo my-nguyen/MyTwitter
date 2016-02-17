@@ -4,6 +4,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,28 +12,11 @@ import java.util.List;
  * Created by My on 2/16/2016.
  */
 // this class parses the JSON and stores the data, as well as encapsulates state or display logic
-public class Tweet {
-   private String text;
-   // unique database id for the tweet
-   private long uid;
-   private User user;
-   private String createdAt;
-
-   public String getText() {
-      return text;
-   }
-
-   public long getUid() {
-      return uid;
-   }
-
-   public User getUser() {
-      return user;
-   }
-
-   public String getCreatedAt() {
-      return createdAt;
-   }
+public class Tweet implements Serializable {
+   public String  text;
+   public long    uid;
+   public User    user;
+   public String  createdAt;
 
    @Override
    public String toString() {

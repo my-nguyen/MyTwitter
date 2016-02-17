@@ -43,13 +43,13 @@ import java.util.Locale;
       TextView timeAgo = (TextView)convertView.findViewById(R.id.time_ago);
       TextView body = (TextView)convertView.findViewById(R.id.text);
       // populate data into the subviews
-      name.setText(tweet.getUser().getName());
-      screenName.setText("@" + tweet.getUser().getScreenName());
-      timeAgo.setText(abbreviate(getRelativeTimeAgo(tweet.getCreatedAt())));
-      body.setText(tweet.getText());
+      name.setText(tweet.user.getName());
+      screenName.setText("@" + tweet.user.getScreenName());
+      timeAgo.setText(abbreviate(getRelativeTimeAgo(tweet.createdAt)));
+      body.setText(tweet.text);
       // clear out the old image for a recycled view
       profileImage.setImageResource(android.R.color.transparent);
-      Picasso.with(getContext()).load(tweet.getUser().getProfileImageUrl()).into(profileImage);
+      Picasso.with(getContext()).load(tweet.user.getProfileImageUrl()).into(profileImage);
       // return the view to be inserted into the list
       return convertView;
    }
