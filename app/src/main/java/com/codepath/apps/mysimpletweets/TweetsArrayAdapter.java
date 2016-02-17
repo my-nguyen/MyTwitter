@@ -57,7 +57,6 @@ import java.util.Locale;
 
    // this method returns an abbreviated "time ago" string in the format of 20m, 2h, etc.
    private String abbreviate(String relativeTime) {
-      Log.d("NGUYEN", "relativeTime: " + relativeTime);
       // split string into tokens
       String[] tokens = relativeTime.toString().split(" ");
       // return number appended with "m" or "h", e.g. 20m, 2h

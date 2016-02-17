@@ -42,13 +42,17 @@ public class TwitterClient extends OAuthBaseClient {
 	 *    i.e client.get(apiUrl, params, handler);
 	 *    i.e client.post(apiUrl, params, handler);
 	 */
-	public void getHomeTimeline(AsyncHttpResponseHandler handler) {
+	public void getHomeTimeline(long maxId, AsyncHttpResponseHandler handler) {
       String apiUrl = getApiUrl("statuses/home_timeline.json");
       // specify the params
       RequestParams params = new RequestParams();
       params.put("count", 25);
       // show all tweets since tweet no. 1; essentially an unfiltered list of the most recent tweets
       params.put("since_id", 1);
+      // maxId = 0 means just fetch the first 25 tweets
+      // maxId > 0 means fetch more than the first 25 tweets, as in endless scrolling
+		if (maxId > 0)
+         params.put("max_id", maxId);
       // execute the request
       getClient().get(apiUrl, params, handler);
    }

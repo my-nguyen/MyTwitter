@@ -22,6 +22,7 @@ public class TimelineActivity extends AppCompatActivity {
    private List<Tweet>        mTweets;
    private TweetsArrayAdapter mAdapter;
    private ListView           mListView;
+   private long               mLowestId;
 
    @Override
    protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +30,17 @@ public class TimelineActivity extends AppCompatActivity {
       setContentView(R.layout.activity_timeline);
       // find the ListView
       mListView = (ListView)findViewById(R.id.tweets_view);
+      // Attach the listener to the AdapterView onCreate
+      mListView.setOnScrollListener(new EndlessScrollListener() {
+         @Override
+         public boolean onLoadMore(int page, int totalItemsCount) {
+            // triggered only when new data needs to be appended to the list, in this case when
+            // mLowestId is not 0.
+            populateTimeline();
+            // returns true ONLY if more data is actually being loaded; false otherwise.
+            return true;
+         }
+      });
       // create an ArrayList data source
       mTweets = new ArrayList<>();
       // construct an adapter from the data source
@@ -37,7 +49,8 @@ public class TimelineActivity extends AppCompatActivity {
       mListView.setAdapter(mAdapter);
       // get the singleton client
       mClient = TwitterApplication.getRestClient();
-      // populate the timeline
+      // populate the timeline; maxId = 0 tells Twitter to get only the first 25 tweets
+      mLowestId = 0;
       populateTimeline();
    }
 
@@ -51,15 +64,17 @@ public class TimelineActivity extends AppCompatActivity {
       return super.onOptionsItemSelected(item);
    }
 
-   // send an API request to get the timeline json;
-   // fill the listview by creating the tweet objects from the json
    private void populateTimeline() {
-      mClient.getHomeTimeline(new JsonHttpResponseHandler() {
+      // send an API request to get the timeline json
+      mClient.getHomeTimeline(mLowestId, new JsonHttpResponseHandler() {
          @Override
          public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
             Log.d("NGUYEN", response.toString());
+            // fill the listview by creating the tweet objects from the json
             List<Tweet> tweets = Tweet.fromJSONArray(response);
             mAdapter.addAll(tweets);
+            // record the new lowest id, to fetch beyond the current 25 tweets
+            mLowestId = lowestId(tweets);
          }
 
          @Override
@@ -67,5 +82,13 @@ public class TimelineActivity extends AppCompatActivity {
             Log.d("NGUYEN", errorResponse.toString());
          }
       });
+   }
+
+   private long lowestId(List<Tweet> tweets) {
+      long lowest = tweets.get(0).getUid();
+      for (int i = 1; i < tweets.size(); i++)
+         if (lowest > tweets.get(i).getUid())
+            lowest = tweets.get(i).getUid();
+      return lowest;
    }
 }
