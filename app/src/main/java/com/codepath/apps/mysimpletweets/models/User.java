@@ -9,26 +9,10 @@ import java.io.Serializable;
  * Created by My on 2/16/2016.
  */
 public class User implements Serializable {
-   private String name;
-   private long uid;
-   private String screenName;
-   private String profileImageUrl;
-
-   public String getName() {
-      return name;
-   }
-
-   public long getUid() {
-      return uid;
-   }
-
-   public String getScreenName() {
-      return screenName;
-   }
-
-   public String getProfileImageUrl() {
-      return profileImageUrl;
-   }
+   public String name;
+   public long   uid;
+   public String screenName;
+   public String profileImageUrl;
 
    @Override
    public String toString() {

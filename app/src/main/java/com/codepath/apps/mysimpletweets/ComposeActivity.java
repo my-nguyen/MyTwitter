@@ -48,9 +48,9 @@ public class ComposeActivity extends AppCompatActivity {
 
       // populate data into the subviews
       profileImage.setImageResource(android.R.color.transparent);
-      Picasso.with(this).load(user.getProfileImageUrl()).into(profileImage);
-      name.setText(user.getName());
-      screenName.setText("@" + user.getScreenName());
+      Picasso.with(this).load(user.profileImageUrl).into(profileImage);
+      name.setText(user.name);
+      screenName.setText("@" + user.screenName);
       cancelButton.setOnClickListener(new View.OnClickListener() {
          @Override
          public void onClick(View v) {
