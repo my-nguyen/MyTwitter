@@ -1,6 +1,7 @@
 package com.codepath.apps.mysimpletweets;
 
 import android.content.Intent;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -25,6 +26,7 @@ public class TimelineActivity extends AppCompatActivity {
    private List<Tweet>        mTweets;
    private TweetsArrayAdapter mAdapter;
    private ListView           mListView;
+   private SwipeRefreshLayout mSwipeContainer;
    private long               mLowestId;
    private User               mUser = null;
 
@@ -33,6 +35,8 @@ public class TimelineActivity extends AppCompatActivity {
       super.onCreate(savedInstanceState);
       setContentView(R.layout.activity_timeline);
 
+      // find the SwipeRefreshLayout container
+      mSwipeContainer = (SwipeRefreshLayout)findViewById(R.id.swipe_container);
       // find the ListView
       mListView = (ListView)findViewById(R.id.tweets_view);
       // Attach the listener to the AdapterView onCreate
@@ -56,8 +60,24 @@ public class TimelineActivity extends AppCompatActivity {
       mClient = TwitterApplication.getRestClient();
       // populate the timeline; maxId = 0 tells Twitter to get only the first 25 tweets
       mLowestId = 0;
+      // populate timeline upon startup
       populateTimeline();
+      // fetch and save the current user's credentials, for use in composing a new Tweet
       getUserCredentials();
+      // set up refresh listener
+      mSwipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+         @Override
+         public void onRefresh() {
+            // re-populate the timeline
+            populateTimeline();
+         }
+      });
+      // configure the refreshing colors
+      mSwipeContainer.setColorSchemeColors(
+            android.R.color.holo_blue_bright,
+            android.R.color.holo_green_light,
+            android.R.color.holo_orange_light,
+            android.R.color.holo_red_light);
    }
 
    @Override
@@ -96,9 +116,12 @@ public class TimelineActivity extends AppCompatActivity {
             Log.d("NGUYEN", response.toString());
             // fill the listview by creating the tweet objects from the json
             List<Tweet> tweets = Tweet.fromJSONArray(response);
+            Log.d("NGUYEN", "latest tweet: " + tweets.get(0));
             mAdapter.addAll(tweets);
-            // record the new lowest id, to fetch beyond the current 25 tweets
+            // record the new lowest id, for subsequent fetches beyond the current 25 tweets
             mLowestId = lowestId(tweets);
+            // signal refresh has finished
+            mSwipeContainer.setRefreshing(false);
          }
 
          @Override
