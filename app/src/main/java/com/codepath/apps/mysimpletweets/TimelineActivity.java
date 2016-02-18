@@ -27,7 +27,6 @@ public class TimelineActivity extends AppCompatActivity {
    private TweetsArrayAdapter mAdapter;
    private ListView           mListView;
    private SwipeRefreshLayout mSwipeContainer;
-   private long               mLowestId;
    private User               mUser = null;
 
    @Override
@@ -44,8 +43,8 @@ public class TimelineActivity extends AppCompatActivity {
          @Override
          public boolean onLoadMore(int page, int totalItemsCount) {
             // triggered only when new data needs to be appended to the list, in this case when
-            // mLowestId is not 0.
-            populateTimeline();
+            // lowestId is not 0.
+            populateTimeline(findLowestId());
             // returns true ONLY if more data is actually being loaded; false otherwise.
             return true;
          }
@@ -58,10 +57,8 @@ public class TimelineActivity extends AppCompatActivity {
       mListView.setAdapter(mAdapter);
       // get the singleton client
       mClient = TwitterApplication.getRestClient();
-      // populate the timeline; maxId = 0 tells Twitter to get only the first 25 tweets
-      mLowestId = 0;
       // populate timeline upon startup
-      populateTimeline();
+      populateTimeline(0);
       // fetch and save the current user's credentials, for use in composing a new Tweet
       getUserCredentials();
       // set up refresh listener
@@ -69,7 +66,7 @@ public class TimelineActivity extends AppCompatActivity {
          @Override
          public void onRefresh() {
             // re-populate the timeline
-            populateTimeline();
+            populateTimeline(0);
          }
       });
       // configure the refreshing colors
@@ -108,18 +105,21 @@ public class TimelineActivity extends AppCompatActivity {
       }
    }
 
-   private void populateTimeline() {
+   // lowestId == 0 means this is a fresh new feed of 25 tweets
+   // lowestId != 0 means to fetch the next 25 tweets beyond the current list of tweets in the timeline
+   private void populateTimeline(final long lowestId) {
       // send an API request to get the timeline json
-      mClient.getHomeTimeline(mLowestId, new JsonHttpResponseHandler() {
+      mClient.getHomeTimeline(lowestId, new JsonHttpResponseHandler() {
          @Override
          public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
             Log.d("NGUYEN", response.toString());
             // fill the listview by creating the tweet objects from the json
             List<Tweet> tweets = Tweet.fromJSONArray(response);
-            Log.d("NGUYEN", "latest tweet: " + tweets.get(0));
+            // need to clear adapter on fresh new feed; with a load-more feed, just add the feed to
+            // the current list of feed.
+            if (lowestId == 0)
+               mAdapter.clear();
             mAdapter.addAll(tweets);
-            // record the new lowest id, for subsequent fetches beyond the current 25 tweets
-            mLowestId = lowestId(tweets);
             // signal refresh has finished
             mSwipeContainer.setRefreshing(false);
          }
@@ -131,11 +131,12 @@ public class TimelineActivity extends AppCompatActivity {
       });
    }
 
-   private long lowestId(List<Tweet> tweets) {
-      long lowest = tweets.get(0).uid;
-      for (int i = 1; i < tweets.size(); i++)
-         if (lowest > tweets.get(i).uid)
-            lowest = tweets.get(i).uid;
+   // this method finds the new lowest id, for subsequent fetches beyond the current 25 tweets
+   private long findLowestId() {
+      long lowest = ((Tweet)mAdapter.getItem(0)).uid;
+      for (int i = 1; i < mAdapter.getCount(); i++)
+         if (lowest > ((Tweet)mAdapter.getItem(i)).uid)
+            lowest = ((Tweet)mAdapter.getItem(i)).uid;
       return lowest;
    }
 

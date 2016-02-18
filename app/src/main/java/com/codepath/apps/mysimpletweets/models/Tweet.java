@@ -27,7 +27,7 @@ public class Tweet implements Serializable {
    }
 
    // this method deserializes a JSON object into a Tweet object
-   public static Tweet fromJSON(JSONObject jsonObject) {
+   public static Tweet fromJSONObject(JSONObject jsonObject) {
       Tweet tweet = new Tweet();
       try {
          tweet.text = jsonObject.getString("text");
@@ -45,7 +45,7 @@ public class Tweet implements Serializable {
       for (int i = 0; i < jsonArray.length(); i++) {
          try {
             JSONObject jsonObject = jsonArray.getJSONObject(i);
-            Tweet tweet = fromJSON(jsonObject);
+            Tweet tweet = fromJSONObject(jsonObject);
             if (tweet != null)
                tweets.add(tweet);
          } catch (JSONException e) {
