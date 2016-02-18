@@ -41,12 +41,12 @@ import java.util.Locale;
       TextView name = (TextView)convertView.findViewById(R.id.name);
       TextView screenName = (TextView)convertView.findViewById(R.id.screen_name);
       TextView timeAgo = (TextView)convertView.findViewById(R.id.time_ago);
-      TextView body = (TextView)convertView.findViewById(R.id.text);
+      TextView text = (TextView)convertView.findViewById(R.id.text);
       // populate data into the subviews
       name.setText(tweet.user.getName());
       screenName.setText("@" + tweet.user.getScreenName());
       timeAgo.setText(abbreviate(getRelativeTimeAgo(tweet.createdAt)));
-      body.setText(tweet.text);
+      text.setText(tweet.text);
       // clear out the old image for a recycled view
       profileImage.setImageResource(android.R.color.transparent);
       Picasso.with(getContext()).load(tweet.user.getProfileImageUrl()).into(profileImage);

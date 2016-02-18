@@ -37,7 +37,6 @@
         android:id="@+id/time_ago"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="AGO"
         android:layout_alignBottom="@+id/screen_name"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
@@ -54,5 +53,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/name"
         android:layout_toRightOf="@+id/profile_image"
+        android:autoLink="all"
+        android:linksClickable="true"
         />
 </RelativeLayout>
