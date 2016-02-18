@@ -1,6 +1,9 @@
 package com.codepath.apps.mysimpletweets;
 
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -9,6 +12,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListView;
 
+import com.activeandroid.query.Select;
 import com.codepath.apps.mysimpletweets.models.Tweet;
 import com.codepath.apps.mysimpletweets.models.User;
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -108,19 +112,29 @@ public class TimelineActivity extends AppCompatActivity {
    // lowestId == 0 means this is a fresh new feed of 25 tweets
    // lowestId != 0 means to fetch the next 25 tweets beyond the current list of tweets in the timeline
    private void populateTimeline(final long lowestId) {
-      // send an API request to get the timeline json
+      // retrieve a feed of 25 tweets for the home timeline from twitter.com
       mClient.getHomeTimeline(lowestId, new JsonHttpResponseHandler() {
          @Override
          public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
             Log.d("NGUYEN", response.toString());
-            // fill the listview by creating the tweet objects from the json
-            List<Tweet> tweets = Tweet.fromJSONArray(response);
-            // need to clear adapter on fresh new feed; with a load-more feed, just add the feed to
-            // the current list of feed.
-            if (lowestId == 0)
+            // clear adapter and database on a fresh new feed of tweets
+            if (lowestId == 0) {
+               Tweet.deleteAll();
                mAdapter.clear();
+            }
+            // create tweet objects from JSON feed from twitter.com
+            List<Tweet> tweets = Tweet.fromJSONArray(response);
+            Log.d("NGUYEN", "fetched " + tweets.size() + " tweets from twitter.com");
+            // save tweet objects to local database via ActiveAndroid
+            Tweet.saveAll(tweets);
+            /*
+            // test to load tweet feed from local database instead of from twitter.com
+            List<Tweet> tweets = Tweet.getAll();
+            Log.d("NGUYEN", "fetched " + tweets.size() + " tweets from the database");
+            */
+            // with a load-more feed (endless scroll), just add the feed to the current list of feed
             mAdapter.addAll(tweets);
-            // signal refresh has finished
+            // signal swipe refresh has finished
             mSwipeContainer.setRefreshing(false);
          }
 
@@ -144,9 +158,16 @@ public class TimelineActivity extends AppCompatActivity {
       mClient.getUserCredentials(new JsonHttpResponseHandler() {
          @Override
          public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-            mUser = User.fromJson(response);
+            mUser = User.fromJsonObject(response);
             Log.d("NGUYEN", mUser.toString());
          }
       });
+   }
+
+   private Boolean isNetworkAvailable() {
+      ConnectivityManager connectivityManager
+            = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+      NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+      return activeNetworkInfo != null && activeNetworkInfo.isConnectedOrConnecting();
    }
 }
