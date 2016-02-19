@@ -42,7 +42,7 @@ import java.util.Locale;
       TextView name = (TextView)convertView.findViewById(R.id.name);
       TextView screenName = (TextView)convertView.findViewById(R.id.screen_name);
       TextView timeAgo = (TextView)convertView.findViewById(R.id.time_ago);
-      TextView text = (TextView)convertView.findViewById(R.id.text);
+      LinkifiedTextView text = (LinkifiedTextView)convertView.findViewById(R.id.text);
       // populate data into the subviews
       name.setText(tweet.user.name);
       screenName.setText("@" + tweet.user.screenName);

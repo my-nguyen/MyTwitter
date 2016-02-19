@@ -68,16 +68,6 @@ public class TimelineActivity extends AppCompatActivity {
       populateTimeline(0);
       // fetch and save the current user's credentials, for use in composing a new Tweet
       getUserCredentials();
-      // set up click which leads to Tweet detail screen
-      mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-         @Override
-         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            Tweet tweet = mTweets.get(position);
-            Log.d("NGUYEN", "retrieved tweet(" + position + "): " + tweet);
-            FragmentTweet fragmentTweet = FragmentTweet.newInstance(tweet);
-            fragmentTweet.show(getSupportFragmentManager(), "fragment_tweet");
-         }
-      });
       // set up refresh listener
       mSwipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
          @Override
@@ -92,6 +82,15 @@ public class TimelineActivity extends AppCompatActivity {
             android.R.color.holo_green_light,
             android.R.color.holo_orange_light,
             android.R.color.holo_red_light);
+      // set up click which leads to Tweet detail screen
+      mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+         @Override
+         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            Tweet tweet = mTweets.get(position);
+            FragmentTweet fragmentTweet = FragmentTweet.newInstance(tweet);
+            fragmentTweet.show(getSupportFragmentManager(), "fragment_tweet");
+         }
+      });
    }
 
    @Override
