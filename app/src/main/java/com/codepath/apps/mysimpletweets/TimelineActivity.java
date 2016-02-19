@@ -21,6 +21,7 @@ import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -112,37 +113,43 @@ public class TimelineActivity extends AppCompatActivity {
    // lowestId == 0 means this is a fresh new feed of 25 tweets
    // lowestId != 0 means to fetch the next 25 tweets beyond the current list of tweets in the timeline
    private void populateTimeline(final long lowestId) {
-      // retrieve a feed of 25 tweets for the home timeline from twitter.com
-      mClient.getHomeTimeline(lowestId, new JsonHttpResponseHandler() {
-         @Override
-         public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-            Log.d("NGUYEN", response.toString());
-            // clear adapter and database on a fresh new feed of tweets
-            if (lowestId == 0) {
-               Tweet.deleteAll();
-               mAdapter.clear();
+      if (!isNetworkAvailable() || !isOnline()) {
+         Log.d("NGUYEN", "Network isn't available");
+         mAdapter.clear();
+         // load tweet feed from local database instead of from twitter.com
+         List<Tweet> tweets = Tweet.getAll();
+         Log.d("NGUYEN", "fetched " + tweets.size() + " tweets from the database");
+         mAdapter.addAll(tweets);
+         // signal swipe refresh has finished
+         mSwipeContainer.setRefreshing(false);
+      }
+      else {
+         Log.d("NGUYEN", "Network IS available");
+         // retrieve a feed of 25 tweets for the home timeline from twitter.com
+         mClient.getHomeTimeline(lowestId, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+               Log.d("NGUYEN", response.toString());
+               // clear adapter and database on a fresh new feed of tweets
+               if (lowestId == 0) {
+                  Tweet.deleteAll();
+                  mAdapter.clear();
+               }
+               // create tweet objects (and save them to local database) from JSON feed from twitter.com
+               List<Tweet> tweets = Tweet.fromJSONArray(response);
+               Log.d("NGUYEN", "fetched " + tweets.size() + " tweets from twitter.com");
+               // with a load-more feed (endless scroll), just add the feed to the current list of feed
+               mAdapter.addAll(tweets);
+               // signal swipe refresh has finished
+               mSwipeContainer.setRefreshing(false);
             }
-            // create tweet objects from JSON feed from twitter.com
-            List<Tweet> tweets = Tweet.fromJSONArray(response);
-            Log.d("NGUYEN", "fetched " + tweets.size() + " tweets from twitter.com");
-            // save tweet objects to local database via ActiveAndroid
-            Tweet.saveAll(tweets);
-            /*
-            // test to load tweet feed from local database instead of from twitter.com
-            List<Tweet> tweets = Tweet.getAll();
-            Log.d("NGUYEN", "fetched " + tweets.size() + " tweets from the database");
-            */
-            // with a load-more feed (endless scroll), just add the feed to the current list of feed
-            mAdapter.addAll(tweets);
-            // signal swipe refresh has finished
-            mSwipeContainer.setRefreshing(false);
-         }
 
-         @Override
-         public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-            Log.d("NGUYEN", errorResponse.toString());
-         }
-      });
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+               Log.d("NGUYEN", errorResponse.toString());
+            }
+         });
+      }
    }
 
    // this method finds the new lowest id, for subsequent fetches beyond the current 25 tweets
@@ -169,5 +176,16 @@ public class TimelineActivity extends AppCompatActivity {
             = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
       NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
       return activeNetworkInfo != null && activeNetworkInfo.isConnectedOrConnecting();
+   }
+
+   private boolean isOnline() {
+      Runtime runtime = Runtime.getRuntime();
+      try {
+         Process ipProcess = runtime.exec("/system/bin/ping -c 1 8.8.8.8");
+         int     exitValue = ipProcess.waitFor();
+         return (exitValue == 0);
+      } catch (IOException e)          { e.printStackTrace(); }
+      catch (InterruptedException e) { e.printStackTrace(); }
+      return false;
    }
 }

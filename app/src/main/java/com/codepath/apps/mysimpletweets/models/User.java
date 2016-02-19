@@ -45,16 +45,6 @@ public class User extends Model implements Serializable {
       return builder.toString();
    }
 
-   public void safeSave() {
-      // check whether this User already exists in the database
-      User user = new Select().from(User.class).where("remote_id = ?", uid).executeSingle();
-      if (user == null)
-         // only save this User if it doesn't already exist. otherwise this would generate a unique
-         // constraint failure in the database, which would lead to a foreign key constraint failure
-         // in the associated Tweets table, resulting in the Tweet record not getting saved
-         super.save();
-   }
-
    public static void deleteAll() {
       new Delete().from(User.class).execute();
    }
@@ -66,6 +56,27 @@ public class User extends Model implements Serializable {
          user.uid = jsonObject.getLong("id");
          user.screenName = jsonObject.getString("screen_name");
          user.profileImageUrl = jsonObject.getString("profile_image_url");
+      } catch (JSONException e) {
+         e.printStackTrace();
+      }
+      return user;
+   }
+
+   public static User findOrCreateFromJsonObject(JSONObject jsonObject) {
+      long uid = 0;
+      User user = null;
+      try {
+         // check whether this User already exists in the database
+         uid = jsonObject.getLong("id");
+         user = new Select().from(User.class).where("remote_id = ?", uid).executeSingle();
+         if (user == null) {
+            // only save this User if it doesn't already exist. otherwise this would generate a
+            // unique constraint failure in the Users table, which would lead to a foreign key
+            // constraint failure in the associated Tweets table, resulting in the Tweet record not
+            // getting saved
+            user = User.fromJsonObject(jsonObject);
+            user.save();
+         }
       } catch (JSONException e) {
          e.printStackTrace();
       }

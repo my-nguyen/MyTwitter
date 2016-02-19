@@ -49,27 +49,20 @@ public class Tweet extends Model implements Serializable {
       return new Select().from(Tweet.class).orderBy("remote_id DESC").limit(100).execute();
    }
 
-   public static void saveAll(List<Tweet> tweets) {
-      Log.d("NGUYEN", "saving " + tweets.size() + " tweets to the database");
-      for (Tweet tweet : tweets) {
-         tweet.user.safeSave();
-         tweet.save();
-      }
-   }
-
    public static void deleteAll() {
       User.deleteAll();
       new Delete().from(Tweet.class).execute();
    }
 
-   // this method deserializes a JSON object into a Tweet object
+   // this method deserializes a JSON object into a Tweet object and saves it into local database
    public static Tweet fromJSONObject(JSONObject jsonObject) {
       Tweet tweet = new Tweet();
       try {
          tweet.text = jsonObject.getString("text");
          tweet.uid = jsonObject.getLong("id");
          tweet.createdAt = jsonObject.getString("created_at");
-         tweet.user = User.fromJsonObject(jsonObject.getJSONObject("user"));
+         tweet.user = User.findOrCreateFromJsonObject(jsonObject.getJSONObject("user"));
+         tweet.save();
       } catch (JSONException e) {
          e.printStackTrace();
       }

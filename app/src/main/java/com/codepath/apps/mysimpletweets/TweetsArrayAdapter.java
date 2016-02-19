@@ -2,6 +2,7 @@ package com.codepath.apps.mysimpletweets;
 
 import android.content.Context;
 import android.text.format.DateUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,6 +34,11 @@ import java.util.Locale;
    public View getView(int position, View convertView, ViewGroup parent) {
       // get the tweet
       Tweet tweet = getItem(position);
+      /*
+      Log.d("NGUYEN", "getItem is " + (tweet == null ? "null" : "not null"));
+      if (tweet != null)
+         Log.d("NGUYEN", "User is " + (tweet.user == null ? "null" : "not null"));
+         */
       // find or inflate the template
       if (convertView == null)
          convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_tweet, parent, false);
