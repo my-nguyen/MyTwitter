@@ -30,19 +30,19 @@
         android:textColor="@color/gray"
         android:textSize="13dp"/>
     <TextView
-        android:id="@+id/time_ago"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/screen_name"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginRight="5dp"
-        />
-    <TextView
         android:id="@+id/text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/name"
+        android:layout_below="@id/name"
         android:layout_toRightOf="@+id/profile_image"
+        android:autoLink="all"
+        android:linksClickable="true"
+        />
+    <TextView
+        android:id="@+id/date_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/text"
+        android:layout_alignParentLeft="true"
         />
 </RelativeLayout>

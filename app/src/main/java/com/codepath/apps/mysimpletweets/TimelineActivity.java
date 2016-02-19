@@ -10,6 +10,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.activeandroid.query.Select;
@@ -66,6 +68,16 @@ public class TimelineActivity extends AppCompatActivity {
       populateTimeline(0);
       // fetch and save the current user's credentials, for use in composing a new Tweet
       getUserCredentials();
+      // set up click which leads to Tweet detail screen
+      mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+         @Override
+         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            Tweet tweet = mTweets.get(position);
+            Log.d("NGUYEN", "retrieved tweet(" + position + "): " + tweet);
+            FragmentTweet fragmentTweet = FragmentTweet.newInstance(tweet);
+            fragmentTweet.show(getSupportFragmentManager(), "fragment_tweet");
+         }
+      });
       // set up refresh listener
       mSwipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
          @Override
@@ -124,7 +136,6 @@ public class TimelineActivity extends AppCompatActivity {
          mSwipeContainer.setRefreshing(false);
       }
       else {
-         Log.d("NGUYEN", "Network IS available");
          // retrieve a feed of 25 tweets for the home timeline from twitter.com
          mClient.getHomeTimeline(lowestId, new JsonHttpResponseHandler() {
             @Override
@@ -146,7 +157,8 @@ public class TimelineActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-               Log.d("NGUYEN", errorResponse.toString());
+               if (errorResponse != null)
+                  Log.d("NGUYEN", errorResponse.toString());
             }
          });
       }
@@ -166,7 +178,6 @@ public class TimelineActivity extends AppCompatActivity {
          @Override
          public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
             mUser = User.fromJsonObject(response);
-            Log.d("NGUYEN", mUser.toString());
          }
       });
    }
