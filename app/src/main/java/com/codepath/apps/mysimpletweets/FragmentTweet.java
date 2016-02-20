@@ -1,9 +1,10 @@
 package com.codepath.apps.mysimpletweets;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
-import android.text.format.DateUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,10 +15,12 @@ import android.widget.TextView;
 import com.codepath.apps.mysimpletweets.models.Tweet;
 import com.squareup.picasso.Picasso;
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.TimeZone;
 
 /**
  * Created by My on 2/18/2016.
@@ -46,6 +49,13 @@ public class FragmentTweet extends DialogFragment {
       super.onViewCreated(view, savedInstanceState);
       // extract Tweet object from bundle
       Tweet tweet = (Tweet)getArguments().getSerializable("TWEET_IN");
+      // set up the TitleBar
+      getDialog().setTitle("Tweet");
+      // set up the title divider
+      int titleDividerId = getResources().getIdentifier("titleDivider", "id", "android");
+      View titleDivider = getDialog().findViewById(titleDividerId);
+      if (titleDivider != null)
+         titleDivider.setBackgroundColor(Color.BLACK);
       // find the subviews to fill with data in the template
       ImageView profileImage = (ImageView)view.findViewById(R.id.profile_image);
       TextView name = (TextView)view.findViewById(R.id.name);
@@ -57,16 +67,14 @@ public class FragmentTweet extends DialogFragment {
       screenName.setText("@" + tweet.user.screenName);
       text.setText(tweet.text);
       Picasso.with(getContext()).load(tweet.user.profileImageUrl).into(profileImage);
-      String twitterFormat = "EEE MMM dd HH:mm:ss ZZZZZ yyyy";
-      SimpleDateFormat sf = new SimpleDateFormat(twitterFormat, Locale.ENGLISH);
-      sf.setLenient(true);
+      SimpleDateFormat format = new SimpleDateFormat("EEE MMM dd HH:mm:ss ZZZZZ yyyy");
       Date date = null;
       try {
-         date = sf.parse(tweet.createdAt);
+         date = format.parse(tweet.createdAt);
       } catch (ParseException e) {
          e.printStackTrace();
       }
-      dateTime.setText(date.toString());
+      dateTime.setText(DateFormat.getInstance().format(date));
    }
 
    @Override
