@@ -74,7 +74,7 @@ public class ComposeActivity extends AppCompatActivity {
             // the number of characters in the EditText
             int count = s.toString().length();
             // update text with the number
-            textCount.setText(Integer.toString(count));
+            textCount.setText(Integer.toString(140 - count));
             if (count > 140) {
                // change text color to RED
                textCount.setTextColor(Color.RED);

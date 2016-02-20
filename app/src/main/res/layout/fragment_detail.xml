@@ -49,4 +49,21 @@
         android:layout_alignParentLeft="true"
         android:layout_marginTop="10dp"
         />
+    <View
+        android:id="@+id/separator"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@id/date_time"
+        android:background="@android:color/darker_gray"
+        android:layout_marginTop="10dp"
+        />
+    <ImageButton
+        android:id="@+id/reply"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@drawable/ic_reply"
+        android:layout_below="@id/separator"
+        android:layout_alignParentLeft="true"
+        android:background="@android:color/transparent"
+        />
 </RelativeLayout>

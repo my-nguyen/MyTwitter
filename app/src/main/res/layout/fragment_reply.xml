@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ComposeActivity">
+    >
     <ImageView
         android:id="@+id/profile_image"
         android:layout_width="50dp"
@@ -15,42 +14,50 @@
         android:layout_marginTop="@dimen/activity_horizontal_margin"
         android:layout_marginLeft="@dimen/activity_vertical_margin"
         />
-    <TextView
-        android:id="@+id/name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textStyle="bold"
-        android:layout_alignParentTop="true"
-        android:layout_toRightOf="@+id/profile_image"
-        android:layout_marginTop="@dimen/activity_horizontal_margin"
-        android:layout_marginLeft="10dp"
-        />
-    <TextView
-        android:id="@+id/screen_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/name"
-        android:layout_toRightOf="@+id/profile_image"
-        android:layout_marginLeft="10dp"
-        android:textColor="@color/gray"
-        android:textSize="13dp"/>
     <ImageButton
         android:id="@+id/cancel_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:src="@drawable/ic_cancel"
         android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:layout_marginTop="@dimen/activity_horizontal_margin"
-        android:layout_marginRight="@dimen/activity_vertical_margin"
         android:background="@android:color/transparent"
+        />
+    <View
+        android:id="@+id/separator1"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@id/profile_image"
+        android:background="@android:color/darker_gray"
+        android:layout_marginTop="8dp"
+        />
+    <ImageView
+        android:id="@+id/down_arrow"
+        android:layout_width="12dp"
+        android:layout_height="12dp"
+        android:layout_below="@id/separator1"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="@dimen/activity_vertical_margin"
+        android:layout_marginTop="16dp"
+        />
+    <TextView
+        android:id="@+id/caption"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/separator1"
+        android:layout_toRightOf="@id/down_arrow"
+        android:text="@string/reply_caption"
+        android:textSize="12dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="13dp"
         />
     <LinearLayout
         android:id="@+id/edittext_container"
         android:layout_width="match_parent"
-        android:layout_height="370dp"
-        android:layout_below="@id/profile_image"
+        android:layout_height="350dp"
+        android:layout_below="@id/down_arrow"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
         >
@@ -59,13 +66,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@android:color/transparent"
+            android:focusable="true"
             android:layout_marginTop="25dp"
             android:layout_marginLeft="@dimen/activity_vertical_margin"
             android:layout_marginRight="@dimen/activity_vertical_margin"
             />
     </LinearLayout>
     <View
-        android:id="@+id/separator"
+        android:id="@+id/separator2"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_below="@id/edittext_container"
@@ -75,7 +83,7 @@
         android:text="@string/tweet_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/separator"
+        android:layout_below="@id/separator2"
         android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"
         android:layout_marginTop="10dp"

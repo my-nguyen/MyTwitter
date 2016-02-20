@@ -14,7 +14,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-import com.activeandroid.query.Select;
 import com.codepath.apps.mysimpletweets.models.Tweet;
 import com.codepath.apps.mysimpletweets.models.User;
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -87,8 +86,8 @@ public class TimelineActivity extends AppCompatActivity {
          @Override
          public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             Tweet tweet = mTweets.get(position);
-            FragmentTweet fragmentTweet = FragmentTweet.newInstance(tweet);
-            fragmentTweet.show(getSupportFragmentManager(), "fragment_tweet");
+            DetailFragment detailFragment = DetailFragment.newInstance(tweet, mUser);
+            detailFragment.show(getSupportFragmentManager(), "fragment_detail");
          }
       });
    }
