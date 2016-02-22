@@ -4,7 +4,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
-import android.util.Log;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,9 +20,7 @@ import com.squareup.picasso.Picasso;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 /**
  * Created by My on 2/18/2016.
@@ -65,13 +63,18 @@ public static DetailFragment newInstance(Tweet tweet, User currentUser) {
       TextView name = (TextView)view.findViewById(R.id.name);
       TextView screenName = (TextView)view.findViewById(R.id.screen_name);
       TextView text = (TextView)view.findViewById(R.id.text);
+      ImageView image = (ImageView)view.findViewById(R.id.image);
       TextView dateTime = (TextView)view.findViewById(R.id.date_time);
       ImageButton reply = (ImageButton)view.findViewById(R.id.reply);
       // populate data into the subviews
+      Picasso.with(getContext()).load(tweet.user.profileImageUrl).into(profileImage);
       name.setText(tweet.user.name);
       screenName.setText("@" + tweet.user.screenName);
-      text.setText(tweet.text);
-      Picasso.with(getContext()).load(tweet.user.profileImageUrl).into(profileImage);
+      text.setText(Html.fromHtml(formatText(tweet.text)));
+      if (tweet.mediaUrl != null) {
+         int widthPixels = getContext().getResources().getDisplayMetrics().widthPixels;
+         Picasso.with(getContext()).load(tweet.mediaUrl).resize(widthPixels, 0).into(image);
+      }
       // set up the date and time
       SimpleDateFormat format = new SimpleDateFormat("EEE MMM dd HH:mm:ss ZZZZZ yyyy");
       Date date = null;
@@ -107,5 +110,26 @@ public static DetailFragment newInstance(Tweet tweet, User currentUser) {
       getDialog().getWindow().setAttributes((android.view.WindowManager.LayoutParams) params);
       // call super onResume after sizing
       super.onResume();
+   }
+
+   private String formatBlue(String string) {
+      StringBuilder builder = new StringBuilder();
+      builder.append("<font color='#0066FF'>").append(string).append("</font>");
+      return builder.toString();
+   }
+
+   private String formatText(String text) {
+      StringBuilder builder = new StringBuilder();
+      String[] tokens = text.split(" ");
+      for (String token : tokens) {
+         builder.append(" ");
+         if (token.charAt(0) == '#')
+            builder.append(formatBlue(token));
+         else if (token.charAt(0) == '@')
+            builder.append(formatBlue(token));
+         else
+            builder.append(token);
+      }
+      return builder.toString();
    }
 }

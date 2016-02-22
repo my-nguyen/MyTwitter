@@ -24,11 +24,15 @@ import java.util.List;
 public class Tweet extends Model implements Serializable {
    @Column(name = "remote_id", unique = true, onUniqueConflict = Column.ConflictAction.REPLACE)
    public long    uid;
-   @Column(name = "Text")
+   @Column(name = "text")
    public String  text;
    @Column(name = "created_at")
    public String  createdAt;
-   @Column(name = "User", onUpdate = Column.ForeignKeyAction.CASCADE, onDelete = Column.ForeignKeyAction.CASCADE)
+   @Column(name = "display_url")
+   public String  displayUrl;
+   @Column(name = "media_url")
+   public String  mediaUrl;
+   @Column(name = "user", onUpdate = Column.ForeignKeyAction.CASCADE, onDelete = Column.ForeignKeyAction.CASCADE)
    public User    user;
 
    // default constructor required for ActiveAndroid model
@@ -40,7 +44,8 @@ public class Tweet extends Model implements Serializable {
    public String toString() {
       StringBuilder builder = new StringBuilder();
       builder.append("<").append(text).append("> <").append(uid).append("> <").append(createdAt)
-            .append(">\n     ").append(user);
+            .append("> <").append(displayUrl).append("> <").append(mediaUrl)
+            .append(">\n").append(user);
       return builder.toString();
    }
 
@@ -58,9 +63,33 @@ public class Tweet extends Model implements Serializable {
    public static Tweet fromJSONObject(JSONObject jsonObject) {
       Tweet tweet = new Tweet();
       try {
-         tweet.text = jsonObject.getString("text");
          tweet.uid = jsonObject.getLong("id");
          tweet.createdAt = jsonObject.getString("created_at");
+         JSONArray urlJsonArray = jsonObject.getJSONObject("entities").optJSONArray("urls");
+         String text = jsonObject.getString("text");
+         if (urlJsonArray == null || urlJsonArray.optJSONObject(0) == null)
+            tweet.displayUrl = null;
+         else {
+            tweet.displayUrl = urlJsonArray.optJSONObject(0).getString("display_url");
+            String url = urlJsonArray.optJSONObject(0).getString("url");
+            text = text.replace(url, tweet.displayUrl);
+            Log.d("NGUYEN", "URLS, url: " + url + ", display url: " + tweet.displayUrl);
+         }
+         JSONArray mediaJsonArray = jsonObject.getJSONObject("entities").optJSONArray("media");
+         if (mediaJsonArray == null) {
+            tweet.mediaUrl = null;
+            tweet.text = text;
+         }
+         else {
+            tweet.mediaUrl = mediaJsonArray.getJSONObject(0).getString("media_url");
+            String url = mediaJsonArray.optJSONObject(0).getString("url");
+            String shortenedUrl = "https://t.co/u...";
+            if (text.contains(shortenedUrl))
+               tweet.text = text.replace(shortenedUrl, "").trim();
+            else if (text.contains(url))
+               tweet.text = text.replace(url, "").trim();
+         }
+         Log.d("NGUYEN", "DISPLAY URL: " + tweet.displayUrl + ", MEDIA URL: " + tweet.mediaUrl + ", DISPLAY TEXT: " + tweet.text);
          tweet.user = User.findOrCreateFromJsonObject(jsonObject.getJSONObject("user"));
          tweet.save();
       } catch (JSONException e) {
