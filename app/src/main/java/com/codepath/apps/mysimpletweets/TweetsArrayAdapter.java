@@ -43,14 +43,19 @@ import java.util.Locale;
       TextView screenName = (TextView)convertView.findViewById(R.id.screen_name);
       TextView timeAgo = (TextView)convertView.findViewById(R.id.time_ago);
       LinkifiedTextView text = (LinkifiedTextView)convertView.findViewById(R.id.text);
+      ImageView image = (ImageView)convertView.findViewById(R.id.image);
       // populate data into the subviews
+      // clear out the old image for a recycled view
+      profileImage.setImageResource(android.R.color.transparent);
+      Picasso.with(getContext()).load(tweet.user.profileImageUrl).into(profileImage);
       name.setText(tweet.user.name);
       screenName.setText("@" + tweet.user.screenName);
       timeAgo.setText(abbreviate(getRelativeTimeAgo(tweet.createdAt)));
       text.setText(tweet.text);
-      // clear out the old image for a recycled view
-      profileImage.setImageResource(android.R.color.transparent);
-      Picasso.with(getContext()).load(tweet.user.profileImageUrl).into(profileImage);
+      if (tweet.mediaUrl != null) {
+         int widthPixels = getContext().getResources().getDisplayMetrics().widthPixels;
+         Picasso.with(getContext()).load(tweet.mediaUrl).resize(widthPixels, 0).into(image);
+      }
       // return the view to be inserted into the list
       return convertView;
    }

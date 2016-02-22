@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.text.Html;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -118,6 +119,9 @@ public static DetailFragment newInstance(Tweet tweet, User currentUser) {
       return builder.toString();
    }
 
+   // this method is broken, as in the case of a string containing \n\n@something (because
+   // String#split(" ") considers "\n\n" as " ") thus leading to a bug. but in the interest of time
+   // I need to use this for now and move on to implement other features of the app.
    private String formatText(String text) {
       StringBuilder builder = new StringBuilder();
       String[] tokens = text.split(" ");

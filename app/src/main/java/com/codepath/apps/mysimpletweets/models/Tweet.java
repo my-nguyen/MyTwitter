@@ -73,7 +73,6 @@ public class Tweet extends Model implements Serializable {
             tweet.displayUrl = urlJsonArray.optJSONObject(0).getString("display_url");
             String url = urlJsonArray.optJSONObject(0).getString("url");
             text = text.replace(url, tweet.displayUrl);
-            Log.d("NGUYEN", "URLS, url: " + url + ", display url: " + tweet.displayUrl);
          }
          JSONArray mediaJsonArray = jsonObject.getJSONObject("entities").optJSONArray("media");
          if (mediaJsonArray == null) {
@@ -89,7 +88,6 @@ public class Tweet extends Model implements Serializable {
             else if (text.contains(url))
                tweet.text = text.replace(url, "").trim();
          }
-         Log.d("NGUYEN", "DISPLAY URL: " + tweet.displayUrl + ", MEDIA URL: " + tweet.mediaUrl + ", DISPLAY TEXT: " + tweet.text);
          tweet.user = User.findOrCreateFromJsonObject(jsonObject.getJSONObject("user"));
          tweet.save();
       } catch (JSONException e) {
