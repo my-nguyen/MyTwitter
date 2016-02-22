@@ -96,7 +96,7 @@
         android:id="@+id/text_count"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/separator"
+        android:layout_below="@id/separator2"
         android:text="140"
         android:layout_toLeftOf="@id/tweet_button"
         android:layout_marginRight="20dp"

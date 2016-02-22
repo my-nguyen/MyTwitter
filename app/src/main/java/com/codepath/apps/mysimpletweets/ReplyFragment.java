@@ -29,7 +29,6 @@ import org.apache.http.Header;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class ReplyFragment extends DialogFragment {
@@ -43,12 +42,11 @@ public class ReplyFragment extends DialogFragment {
    public ReplyFragment() {
    }
 
-   public static ReplyFragment newInstance(User user, String name, ArrayList<String> screenNames) {
+   public static ReplyFragment newInstance(Tweet tweet, User currentUser) {
       ReplyFragment fragment = new ReplyFragment();
       Bundle args = new Bundle();
-      args.putSerializable("USER", user);
-      args.putString("NAME", name);
-      args.putStringArrayList("SCREEN_NAMES", screenNames);
+      args.putSerializable("TWEET", tweet);
+      args.putSerializable("CURRENT_USER", currentUser);
       fragment.setArguments(args);
       return fragment;
    }
@@ -64,9 +62,8 @@ public class ReplyFragment extends DialogFragment {
       super.onCreate(savedInstanceState);
       getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
 
-      final User user = (User)getArguments().getSerializable("USER");
-      String name = getArguments().getString("NAME");
-      List<String> screenNames = getArguments().getStringArrayList("SCREEN_NAMES");
+      final Tweet tweet = (Tweet)getArguments().getSerializable("TWEET");
+      final User currentUser = (User)getArguments().getSerializable("CURRENT_USER");
       mClient = TwitterApplication.getRestClient();
 
       ImageView profileImage = (ImageView)view.findViewById(R.id.profile_image);
@@ -79,7 +76,7 @@ public class ReplyFragment extends DialogFragment {
 
       // populate data into the subviews
       profileImage.setImageResource(android.R.color.transparent);
-      Picasso.with(getActivity()).load(user.profileImageUrl).into(profileImage);
+      Picasso.with(getActivity()).load(currentUser.profileImageUrl).into(profileImage);
       cancelButton.setOnClickListener(new View.OnClickListener() {
          @Override
          public void onClick(View v) {
@@ -87,10 +84,11 @@ public class ReplyFragment extends DialogFragment {
          }
       });
       Picasso.with(getActivity()).load(R.drawable.ic_down_arrow).into(downArrow);
-      caption.setText("In reply to " + name);
+      caption.setText("In reply to " + tweet.user.name);
+      List<String> screenNames = extractScreenNames(tweet.text, tweet.user.screenName);
       StringBuilder builder = new StringBuilder();
-      for (String recipient : screenNames)
-         builder.append(recipient).append(" ");
+      for (String screenName : screenNames)
+         builder.append(screenName).append(" ");
       text.setText(builder);
       // put cursor at end of text
       text.setSelection(text.getText().length());
@@ -132,8 +130,7 @@ public class ReplyFragment extends DialogFragment {
          public void onClick(View v) {
             final String status = text.getText().toString();
             if (!TextUtils.isEmpty(status)) {
-               Log.d("NGUYEN", "tweeting status: " + status);
-               mClient.postStatus(status, new JsonHttpResponseHandler() {
+               mClient.postStatus(status, Long.toString(tweet.uid), new JsonHttpResponseHandler() {
                   @Override
                   public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                      Log.d("NGUYEN", response.toString());
@@ -162,5 +159,16 @@ public class ReplyFragment extends DialogFragment {
       getDialog().getWindow().setAttributes((android.view.WindowManager.LayoutParams) params);
       // call super onResume after sizing
       super.onResume();
+   }
+
+   // 2 bugs: (1) trailing period; (2) repeated @screenName
+   private List<String> extractScreenNames(String text, String replyToScreenName) {
+      List<String> screenNames = new ArrayList<>();
+      screenNames.add("@" + replyToScreenName);
+      String[] tokens = text.split(" ");
+      for (String token : tokens)
+         if (token.charAt(0) == '@')
+            screenNames.add(token);
+      return screenNames;
    }
 }

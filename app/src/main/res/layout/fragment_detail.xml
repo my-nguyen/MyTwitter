@@ -50,20 +50,58 @@
         android:layout_marginTop="10dp"
         />
     <View
-        android:id="@+id/separator"
+        android:id="@+id/separator1"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_below="@id/date_time"
         android:background="@android:color/darker_gray"
         android:layout_marginTop="10dp"
         />
-    <ImageButton
-        android:id="@+id/reply"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:src="@drawable/ic_reply"
-        android:layout_below="@id/separator"
+    <LinearLayout
+        android:id="@+id/buttons_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/separator1"
         android:layout_alignParentLeft="true"
-        android:background="@android:color/transparent"
+        >
+        <ImageButton
+            android:id="@+id/reply"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:src="@drawable/ic_reply"
+            android:background="@android:color/transparent"
+            />
+        <ImageButton
+            android:id="@+id/retweet"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:src="@drawable/ic_retweet"
+            android:background="@android:color/transparent"
+            />
+        <ImageButton
+            android:id="@+id/heart"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:src="@drawable/ic_heart"
+            android:background="@android:color/transparent"
+            />
+        <ImageButton
+            android:id="@+id/dots"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:src="@drawable/ic_dots"
+            android:background="@android:color/transparent"
+            />
+    </LinearLayout>
+    <View
+        android:id="@+id/separator2"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@id/buttons_bar"
+        android:background="@android:color/darker_gray"
         />
 </RelativeLayout>

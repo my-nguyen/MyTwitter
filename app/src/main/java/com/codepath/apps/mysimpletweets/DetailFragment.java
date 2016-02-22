@@ -4,7 +4,6 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,11 +32,11 @@ public class DetailFragment extends DialogFragment implements ReplyFragment.Repl
    public DetailFragment() {
    }
 
-   public static DetailFragment newInstance(Tweet tweet, User user) {
+public static DetailFragment newInstance(Tweet tweet, User currentUser) {
       DetailFragment fragment = new DetailFragment();
       Bundle args = new Bundle();
       args.putSerializable("TWEET_IN", tweet);
-      args.putSerializable("USER_IN", user);
+      args.putSerializable("USER_IN", currentUser);
       fragment.setArguments(args);
       return fragment;
    }
@@ -53,7 +52,7 @@ public class DetailFragment extends DialogFragment implements ReplyFragment.Repl
       super.onViewCreated(view, savedInstanceState);
       // extract Tweet and User objects from bundle
       final Tweet tweet = (Tweet)getArguments().getSerializable("TWEET_IN");
-      final User user = (User)getArguments().getSerializable("USER_IN");
+      final User currentUser = (User)getArguments().getSerializable("USER_IN");
       // set up the TitleBar
       getDialog().setTitle("Tweet");
       // set up the title divider
@@ -86,28 +85,15 @@ public class DetailFragment extends DialogFragment implements ReplyFragment.Repl
       reply.setOnClickListener(new View.OnClickListener() {
          @Override
          public void onClick(View v) {
-            FragmentManager fm = getFragmentManager();
-            ArrayList<String> screenNames = extractScreenNames(tweet.text, tweet.user.screenName);
-            ReplyFragment replyFragment = ReplyFragment.newInstance(user, tweet.user.name, screenNames);
+            ReplyFragment replyFragment = ReplyFragment.newInstance(tweet, currentUser);
             replyFragment.setTargetFragment(DetailFragment.this, 300);
             replyFragment.show(getFragmentManager(), "FRAGMENT_REPLY");
-         }
-
-         private ArrayList<String> extractScreenNames(String text, String mainScreenName) {
-            ArrayList<String> screenNames = new ArrayList<>();
-            screenNames.add("@" + mainScreenName);
-            String[] tokens = text.split(" ");
-            for (String token : tokens)
-               if (token.charAt(0) == '@')
-                  screenNames.add(token);
-            return screenNames;
          }
       });
    }
 
    @Override
    public void onFinishReplyFragment(Tweet tweet) {
-      Log.d("NGUYEN", "DetailFragment received tweet: " + tweet);
    }
 
    // this method expands the Dialog to occupy full screen
