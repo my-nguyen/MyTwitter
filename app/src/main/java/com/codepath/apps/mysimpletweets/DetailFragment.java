@@ -25,10 +25,27 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
+
 /**
  * Created by My on 2/18/2016.
  */
 public class DetailFragment extends DialogFragment implements ReplyFragment.ReplyFragmentListener {
+   // find the subviews to fill with data in the template
+   @Bind(R.id.profile_image)        ImageView   profileImage;
+   @Bind(R.id.name)                 TextView    name;
+   @Bind(R.id.screen_name)          TextView    screenName;
+   @Bind(R.id.text)                 TextView    text;
+   @Bind(R.id.image)                ImageView   image;
+   @Bind(R.id.date_time)            TextView    dateTime;
+   @Bind(R.id.retweet_count)        TextView    retweetCount;
+   @Bind(R.id.retweet_count_label)  TextView    retweetCountLabel;
+   @Bind(R.id.favorite_count)       TextView    favoriteCount;
+   @Bind(R.id.favorite_count_label) TextView    favoriteCountLabel;
+   @Bind(R.id.separator2)           View        separator;
+   @Bind(R.id.reply)                ImageButton reply;
+
    // empty constructor required by DialogFragment
    public DetailFragment() {
    }
@@ -45,7 +62,9 @@ public class DetailFragment extends DialogFragment implements ReplyFragment.Repl
    @Nullable
    @Override
    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-      return inflater.inflate(R.layout.fragment_detail, container);
+      View view = inflater.inflate(R.layout.fragment_detail, container);
+      ButterKnife.bind(this, view);
+      return view;
    }
 
    @Override
@@ -62,19 +81,6 @@ public class DetailFragment extends DialogFragment implements ReplyFragment.Repl
       View titleDivider = view.findViewById(titleDividerId);
       if (titleDivider != null)
          titleDivider.setBackgroundColor(Color.BLACK);
-      // find the subviews to fill with data in the template
-      ImageView profileImage = (ImageView)view.findViewById(R.id.profile_image);
-      TextView name = (TextView)view.findViewById(R.id.name);
-      TextView screenName = (TextView)view.findViewById(R.id.screen_name);
-      TextView text = (TextView)view.findViewById(R.id.text);
-      ImageView image = (ImageView)view.findViewById(R.id.image);
-      TextView dateTime = (TextView)view.findViewById(R.id.date_time);
-      TextView retweetCount = (TextView)view.findViewById(R.id.retweet_count);
-      TextView retweetCountLabel = (TextView)view.findViewById(R.id.retweet_count_label);
-      TextView favoriteCount = (TextView)view.findViewById(R.id.favorite_count);
-      TextView favoriteCountLabel = (TextView)view.findViewById(R.id.favorite_count_label);
-      View separator = (View)view.findViewById(R.id.separator2);
-      ImageButton reply = (ImageButton)view.findViewById(R.id.reply);
       // populate data into the subviews
       Picasso.with(getContext()).load(tweet.user.profileImageUrl).into(profileImage);
       name.setText(tweet.user.name);
@@ -132,6 +138,12 @@ public class DetailFragment extends DialogFragment implements ReplyFragment.Repl
       getDialog().getWindow().setAttributes((android.view.WindowManager.LayoutParams) params);
       // call super onResume after sizing
       super.onResume();
+   }
+
+   @Override
+   public void onDestroyView() {
+      super.onDestroyView();
+      ButterKnife.unbind(this);
    }
 
    // tried many times to find a matching color, but this was the closest i came.

@@ -32,8 +32,19 @@ import org.parceler.Parcels;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
+
 public class ReplyFragment extends DialogFragment {
    private TwitterClient   mClient;
+   @Bind(R.id.profile_image)  ImageView   profileImage;
+   @Bind(R.id.cancel_button)  ImageButton cancelButton;
+   @Bind(R.id.down_arrow)     ImageView   downArrow;
+   @Bind(R.id.caption)        TextView    caption;
+   @Bind(R.id.text)           EditText    text;
+   @Bind(R.id.text_count)     TextView    textCount;
+   @Bind(R.id.tweet_button)   Button      tweetButton;
+
 
    public interface ReplyFragmentListener {
       void onFinishReplyFragment(Tweet tweet);
@@ -55,7 +66,9 @@ public class ReplyFragment extends DialogFragment {
    @Nullable
    @Override
    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-      return inflater.inflate(R.layout.fragment_reply, container);
+      View view = inflater.inflate(R.layout.fragment_reply, container);
+      ButterKnife.bind(this, view);
+      return view;
    }
 
    @Override
@@ -66,14 +79,6 @@ public class ReplyFragment extends DialogFragment {
       final Tweet tweet = (Tweet)Parcels.unwrap(getArguments().getParcelable("TWEET"));
       final User currentUser = (User)Parcels.unwrap(getArguments().getParcelable("CURRENT_USER"));
       mClient = TwitterApplication.getRestClient();
-
-      ImageView profileImage = (ImageView)view.findViewById(R.id.profile_image);
-      ImageButton cancelButton = (ImageButton)view.findViewById(R.id.cancel_button);
-      ImageView downArrow = (ImageView)view.findViewById(R.id.down_arrow);
-      TextView caption = (TextView)view.findViewById(R.id.caption);
-      final EditText text = (EditText)view.findViewById(R.id.text);
-      final TextView textCount = (TextView)view.findViewById(R.id.text_count);
-      final Button tweetButton = (Button)view.findViewById(R.id.tweet_button);
 
       // populate data into the subviews
       profileImage.setImageResource(android.R.color.transparent);
@@ -160,6 +165,12 @@ public class ReplyFragment extends DialogFragment {
       getDialog().getWindow().setAttributes((android.view.WindowManager.LayoutParams) params);
       // call super onResume after sizing
       super.onResume();
+   }
+
+   @Override
+   public void onDestroyView() {
+      super.onDestroyView();
+      ButterKnife.unbind(this);
    }
 
    // 2 bugs: (1) trailing period; (2) repeated @screenName

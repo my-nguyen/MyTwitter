@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -32,8 +33,18 @@ import org.parceler.Parcels;
 
 import java.util.Date;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
+
 public class ComposeFragment extends DialogFragment {
    private TwitterClient   mClient;
+   @Bind(R.id.profile_image)  ImageView   profileImage;
+   @Bind(R.id.name)           TextView    name;
+   @Bind(R.id.screen_name)    TextView    screenName;
+   @Bind(R.id.cancel_button)  ImageButton cancelButton;
+   @Bind(R.id.text)           EditText    text;
+   @Bind(R.id.text_count)     TextView    textCount;
+   @Bind(R.id.tweet_button)   Button      tweetButton;
 
    // listener interface to pass data back to TimelineActivity
    public interface ComposeFragmentListener {
@@ -55,7 +66,9 @@ public class ComposeFragment extends DialogFragment {
    @Nullable
    @Override
    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-      return inflater.inflate(R.layout.fragment_compose, container);
+      View view = inflater.inflate(R.layout.fragment_compose, container);
+      ButterKnife.bind(this, view);
+      return view;
    }
 
    @Override
@@ -64,14 +77,6 @@ public class ComposeFragment extends DialogFragment {
 
       final User currentUser = (User)Parcels.unwrap(getArguments().getParcelable("CURRENT_USER"));
       mClient = TwitterApplication.getRestClient();
-
-      ImageView profileImage = (ImageView)view.findViewById(R.id.profile_image);
-      TextView name = (TextView)view.findViewById(R.id.name);
-      TextView screenName = (TextView)view.findViewById(R.id.screen_name);
-      ImageButton cancelButton = (ImageButton)view.findViewById(R.id.cancel_button);
-      final EditText text = (EditText)view.findViewById(R.id.text);
-      final TextView textCount = (TextView)view.findViewById(R.id.text_count);
-      final Button tweetButton = (Button)view.findViewById(R.id.tweet_button);
 
       // populate data into the subviews
       profileImage.setImageResource(android.R.color.transparent);
@@ -131,7 +136,7 @@ public class ComposeFragment extends DialogFragment {
                      tweet.user = currentUser;
                      tweet.createdAt = new Date().toString();
                      // call the callback onComposeFragmentFinish() to pass a Tweet back to TimelineActivity
-                     ComposeFragmentListener listener = (ComposeFragmentListener)getActivity();
+                     ComposeFragmentListener listener = (ComposeFragmentListener) getActivity();
                      listener.onFinishComposeFragment(tweet);
                      // dismiss the ComposeActivity screen
                      dismiss();
@@ -140,5 +145,24 @@ public class ComposeFragment extends DialogFragment {
             }
          }
       });
+   }
+
+   // this method expands the Dialog to occupy full screen
+   @Override
+   public void onResume() {
+      // get existing layout params for the window
+      ViewGroup.LayoutParams params = getDialog().getWindow().getAttributes();
+      // assign window properties to fill the parent
+      params.width = WindowManager.LayoutParams.MATCH_PARENT;
+      params.height = WindowManager.LayoutParams.MATCH_PARENT;
+      getDialog().getWindow().setAttributes((android.view.WindowManager.LayoutParams) params);
+      // call super onResume after sizing
+      super.onResume();
+   }
+
+   @Override
+   public void onDestroyView() {
+      super.onDestroyView();
+      ButterKnife.unbind(this);
    }
 }
