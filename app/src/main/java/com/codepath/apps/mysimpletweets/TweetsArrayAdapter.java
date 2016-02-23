@@ -44,6 +44,8 @@ import java.util.Locale;
       TextView timeAgo = (TextView)convertView.findViewById(R.id.time_ago);
       LinkifiedTextView text = (LinkifiedTextView)convertView.findViewById(R.id.text);
       ImageView image = (ImageView)convertView.findViewById(R.id.image);
+      TextView retweetCount = (TextView)convertView.findViewById(R.id.retweet_count);
+      TextView favoriteCount = (TextView)convertView.findViewById(R.id.favorite_count);
       // populate data into the subviews
       // clear out the old image for a recycled view
       profileImage.setImageResource(android.R.color.transparent);
@@ -56,6 +58,10 @@ import java.util.Locale;
          int widthPixels = getContext().getResources().getDisplayMetrics().widthPixels;
          Picasso.with(getContext()).load(tweet.mediaUrl).resize(widthPixels, 0).into(image);
       }
+      if (tweet.retweetCount > 0)
+         retweetCount.setText(Integer.toString(tweet.retweetCount));
+      if (tweet.favoriteCount > 0)
+         favoriteCount.setText(Integer.toString(tweet.favoriteCount));
       // return the view to be inserted into the list
       return convertView;
    }

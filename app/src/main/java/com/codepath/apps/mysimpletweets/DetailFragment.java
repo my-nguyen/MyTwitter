@@ -113,9 +113,10 @@ public static DetailFragment newInstance(Tweet tweet, User currentUser) {
       super.onResume();
    }
 
+   // tried many times to find a matching color, but this was the closest i came.
    private String formatBlue(String string) {
       StringBuilder builder = new StringBuilder();
-      builder.append("<font color='#0066FF'>").append(string).append("</font>");
+      builder.append("<font color='#339966'>").append(string).append("</font>");
       return builder.toString();
    }
 

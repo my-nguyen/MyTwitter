@@ -59,5 +59,50 @@
         android:layout_marginBottom="10dp"
         android:adjustViewBounds="true"
         android:scaleType="fitXY"
-        android:minHeight="50dp"/>
+        android:minHeight="30dp"/>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="15dp"
+        android:layout_below="@id/image"
+        android:layout_alignLeft="@id/image"
+        >
+        <ImageButton
+            android:id="@+id/reply"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:src="@drawable/ic_reply"
+            android:background="@android:color/transparent"
+            />
+        <ImageButton
+            android:id="@+id/retweet"
+            android:layout_toRightOf="@id/reply"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="50dp"
+            android:src="@drawable/ic_retweet"
+            android:background="@android:color/transparent"
+            />
+        <TextView
+            android:id="@+id/retweet_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/retweet"
+            />
+        <ImageButton
+            android:id="@+id/favorite"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/retweet_count"
+            android:layout_marginLeft="50dp"
+            android:src="@drawable/ic_favorite"
+            android:background="@android:color/transparent"
+            />
+        <TextView
+            android:id="@+id/favorite_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/favorite"
+            />
+    </RelativeLayout>
 </RelativeLayout>

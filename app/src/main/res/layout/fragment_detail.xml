@@ -93,11 +93,11 @@
             android:background="@android:color/transparent"
             />
         <ImageButton
-            android:id="@+id/heart"
+            android:id="@+id/favorite"
             android:layout_width="0dp"
             android:layout_height="30dp"
             android:layout_weight="1"
-            android:src="@drawable/ic_heart"
+            android:src="@drawable/ic_favorite"
             android:background="@android:color/transparent"
             />
         <ImageButton

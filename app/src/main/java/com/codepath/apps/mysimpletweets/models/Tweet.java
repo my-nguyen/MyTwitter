@@ -28,6 +28,10 @@ public class Tweet extends Model implements Serializable {
    public String  text;
    @Column(name = "created_at")
    public String  createdAt;
+   @Column(name = "retweet_count")
+   public int     retweetCount;
+   @Column(name = "favorite_count")
+   public int     favoriteCount;
    @Column(name = "display_url")
    public String  displayUrl;
    @Column(name = "media_url")
@@ -44,6 +48,7 @@ public class Tweet extends Model implements Serializable {
    public String toString() {
       StringBuilder builder = new StringBuilder();
       builder.append("<").append(text).append("> <").append(uid).append("> <").append(createdAt)
+            .append("> <").append(retweetCount).append("> <").append(favoriteCount)
             .append("> <").append(displayUrl).append("> <").append(mediaUrl)
             .append(">\n").append(user);
       return builder.toString();
@@ -65,6 +70,8 @@ public class Tweet extends Model implements Serializable {
       try {
          tweet.uid = jsonObject.getLong("id");
          tweet.createdAt = jsonObject.getString("created_at");
+         tweet.retweetCount = jsonObject.getInt("retweet_count");
+         tweet.favoriteCount = jsonObject.getInt("favorite_count");
          JSONArray urlJsonArray = jsonObject.getJSONObject("entities").optJSONArray("urls");
          String text = jsonObject.getString("text");
          if (urlJsonArray == null || urlJsonArray.optJSONObject(0) == null)
