@@ -51,6 +51,7 @@ public static DetailFragment newInstance(Tweet tweet, User currentUser) {
       super.onViewCreated(view, savedInstanceState);
       // extract Tweet and User objects from bundle
       final Tweet tweet = (Tweet)getArguments().getSerializable("TWEET_IN");
+      Log.d("NGUYEN", "TWEET: " + tweet);
       final User currentUser = (User)getArguments().getSerializable("USER_IN");
       // set up the TitleBar
       getDialog().setTitle("Tweet");
@@ -66,6 +67,11 @@ public static DetailFragment newInstance(Tweet tweet, User currentUser) {
       TextView text = (TextView)view.findViewById(R.id.text);
       ImageView image = (ImageView)view.findViewById(R.id.image);
       TextView dateTime = (TextView)view.findViewById(R.id.date_time);
+      TextView retweetCount = (TextView)view.findViewById(R.id.retweet_count);
+      TextView retweetCountLabel = (TextView)view.findViewById(R.id.retweet_count_label);
+      TextView favoriteCount = (TextView)view.findViewById(R.id.favorite_count);
+      TextView favoriteCountLabel = (TextView)view.findViewById(R.id.favorite_count_label);
+      View separator = (View)view.findViewById(R.id.separator2);
       ImageButton reply = (ImageButton)view.findViewById(R.id.reply);
       // populate data into the subviews
       Picasso.with(getContext()).load(tweet.user.profileImageUrl).into(profileImage);
@@ -85,6 +91,19 @@ public static DetailFragment newInstance(Tweet tweet, User currentUser) {
          e.printStackTrace();
       }
       dateTime.setText(DateFormat.getInstance().format(date));
+      Log.d("NGUYEN", "retweet count: " + tweet.retweetCount + ", favorite count: " + tweet.favoriteCount);
+      if (tweet.retweetCount == 0 && tweet.favoriteCount == 0)
+         separator.setVisibility(View.INVISIBLE);
+      else {
+         if (tweet.retweetCount > 0) {
+            retweetCount.setText("" + tweet.retweetCount);
+            retweetCountLabel.setText("RETWEETS");
+         }
+         if (tweet.favoriteCount > 0) {
+            favoriteCount.setText("" + tweet.favoriteCount);
+            favoriteCountLabel.setText("LIKES");
+         }
+      }
       // set up the reply button
       reply.setOnClickListener(new View.OnClickListener() {
          @Override
