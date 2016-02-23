@@ -26,24 +26,24 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
+
 public class TimelineActivity extends AppCompatActivity implements ComposeFragment.ComposeFragmentListener {
    private static final int   REQUEST_CODE = 100;
    private TwitterClient      mClient;
    private List<Tweet>        mTweets;
    private TweetsArrayAdapter mAdapter;
-   private ListView           mListView;
-   private SwipeRefreshLayout mSwipeContainer;
    private User               mCurrentUser = null;
+   @Bind(R.id.swipe_container)   SwipeRefreshLayout   mSwipeContainer;
+   @Bind(R.id.tweets_view)       ListView             mListView;
 
    @Override
    protected void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
       setContentView(R.layout.activity_timeline);
 
-      // find the SwipeRefreshLayout container
-      mSwipeContainer = (SwipeRefreshLayout)findViewById(R.id.swipe_container);
-      // find the ListView
-      mListView = (ListView)findViewById(R.id.tweets_view);
+      ButterKnife.bind(this);
       // Attach the listener to the AdapterView onCreate
       mListView.setOnScrollListener(new EndlessScrollListener() {
          @Override
