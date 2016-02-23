@@ -8,6 +8,7 @@ import com.activeandroid.query.Select;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.parceler.Parcel;
 
 import java.io.Serializable;
 import java.util.List;
@@ -15,8 +16,9 @@ import java.util.List;
 /**
  * Created by My on 2/16/2016.
  */
+@Parcel(analyze={User.class})
 @Table(name = "Users")
-public class User extends Model implements Serializable {
+public class User extends Model {
    @Column(name = "remote_id", unique = true)
    public long   uid;
    @Column(name = "Name")

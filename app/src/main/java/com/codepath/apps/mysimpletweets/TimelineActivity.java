@@ -26,14 +26,14 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TimelineActivity extends AppCompatActivity {
+public class TimelineActivity extends AppCompatActivity implements ComposeFragment.ComposeFragmentListener {
    private static final int   REQUEST_CODE = 100;
    private TwitterClient      mClient;
    private List<Tweet>        mTweets;
    private TweetsArrayAdapter mAdapter;
    private ListView           mListView;
    private SwipeRefreshLayout mSwipeContainer;
-   private User               mUser = null;
+   private User               mCurrentUser = null;
 
    @Override
    protected void onCreate(Bundle savedInstanceState) {
@@ -86,8 +86,8 @@ public class TimelineActivity extends AppCompatActivity {
          @Override
          public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             Tweet tweet = mTweets.get(position);
-            DetailFragment detailFragment = DetailFragment.newInstance(tweet, mUser);
-            detailFragment.show(getSupportFragmentManager(), "fragment_detail");
+            DetailFragment detailFragment = DetailFragment.newInstance(tweet, mCurrentUser);
+            detailFragment.show(getSupportFragmentManager(), "DETAIL_FRAGMENT");
          }
       });
    }
@@ -102,8 +102,12 @@ public class TimelineActivity extends AppCompatActivity {
    public boolean onOptionsItemSelected(MenuItem item) {
       switch (item.getItemId()) {
          case R.id.compose:
+            /*
             Intent intent = ComposeActivity.newIntent(this, mUser);
             startActivityForResult(intent, REQUEST_CODE);
+             */
+            ComposeFragment dialog = ComposeFragment.newInstance(mCurrentUser);
+            dialog.show(getSupportFragmentManager(), "COMPOSE_FRAGMENT");
             return true;
          default:
             return super.onOptionsItemSelected(item);
@@ -118,6 +122,12 @@ public class TimelineActivity extends AppCompatActivity {
          // add the Tweet at the very first position in the adapter
          mAdapter.insert(tweet, 0);
       }
+   }
+
+   @Override
+   public void onFinishComposeFragment(Tweet tweet) {
+      // add the Tweet at the very first position in the adapter
+      mAdapter.insert(tweet, 0);
    }
 
    // lowestId == 0 means this is a fresh new feed of 25 tweets
@@ -175,7 +185,7 @@ public class TimelineActivity extends AppCompatActivity {
       mClient.getUserCredentials(new JsonHttpResponseHandler() {
          @Override
          public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-            mUser = User.fromJsonObject(response);
+            mCurrentUser = User.fromJsonObject(response);
          }
       });
    }

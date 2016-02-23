@@ -24,6 +24,7 @@ import com.squareup.picasso.Picasso;
 
 import org.apache.http.Header;
 import org.json.JSONObject;
+import org.parceler.Parcels;
 
 import java.util.Date;
 
@@ -105,7 +106,7 @@ public class ComposeActivity extends AppCompatActivity {
                      tweet.createdAt = new Date().toString();
                      // stuff that Tweet in an Intent, to pass back to TimelineActivity
                      Intent data = new Intent();
-                     data.putExtra("TWEET_OUT", tweet);
+                     data.putExtra("TWEET_OUT", Parcels.wrap(tweet));
                      setResult(RESULT_OK, data);
                      // dismiss the ComposeActivity screen
                      finish();
@@ -118,7 +119,7 @@ public class ComposeActivity extends AppCompatActivity {
 
    public static Intent newIntent(Context context, User user) {
       Intent intent = new Intent(context, ComposeActivity.class);
-      intent.putExtra("USER_IN", user);
+      intent.putExtra("USER_IN", Parcels.wrap(user));
       return intent;
    }
 }

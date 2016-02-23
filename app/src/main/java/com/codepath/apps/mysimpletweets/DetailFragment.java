@@ -18,6 +18,8 @@ import com.codepath.apps.mysimpletweets.models.Tweet;
 import com.codepath.apps.mysimpletweets.models.User;
 import com.squareup.picasso.Picasso;
 
+import org.parceler.Parcels;
+
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -31,11 +33,11 @@ public class DetailFragment extends DialogFragment implements ReplyFragment.Repl
    public DetailFragment() {
    }
 
-public static DetailFragment newInstance(Tweet tweet, User currentUser) {
+   public static DetailFragment newInstance(Tweet tweet, User currentUser) {
       DetailFragment fragment = new DetailFragment();
       Bundle args = new Bundle();
-      args.putSerializable("TWEET_IN", tweet);
-      args.putSerializable("USER_IN", currentUser);
+      args.putParcelable("TWEET", Parcels.wrap(tweet));
+      args.putParcelable("CURRENT_USER", Parcels.wrap(currentUser));
       fragment.setArguments(args);
       return fragment;
    }
@@ -50,9 +52,9 @@ public static DetailFragment newInstance(Tweet tweet, User currentUser) {
    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
       super.onViewCreated(view, savedInstanceState);
       // extract Tweet and User objects from bundle
-      final Tweet tweet = (Tweet)getArguments().getSerializable("TWEET_IN");
+      final Tweet tweet = (Tweet)Parcels.unwrap(getArguments().getParcelable("TWEET"));
       Log.d("NGUYEN", "TWEET: " + tweet);
-      final User currentUser = (User)getArguments().getSerializable("USER_IN");
+      final User currentUser = (User)Parcels.unwrap(getArguments().getParcelable("CURRENT_USER"));
       // set up the TitleBar
       getDialog().setTitle("Tweet");
       // set up the title divider
@@ -110,7 +112,7 @@ public static DetailFragment newInstance(Tweet tweet, User currentUser) {
          public void onClick(View v) {
             ReplyFragment replyFragment = ReplyFragment.newInstance(tweet, currentUser);
             replyFragment.setTargetFragment(DetailFragment.this, 300);
-            replyFragment.show(getFragmentManager(), "FRAGMENT_REPLY");
+            replyFragment.show(getFragmentManager(), "REPLY_FRAGMENT");
          }
       });
    }

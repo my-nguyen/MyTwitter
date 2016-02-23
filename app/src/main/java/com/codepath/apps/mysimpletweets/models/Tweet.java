@@ -11,6 +11,7 @@ import com.activeandroid.query.Select;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.parceler.Parcel;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -20,8 +21,9 @@ import java.util.List;
  * Created by My on 2/16/2016.
  */
 // this class parses the JSON and stores the data, as well as encapsulates state or display logic
+@Parcel(analyze={Tweet.class})
 @Table(name = "Tweets")
-public class Tweet extends Model implements Serializable {
+public class Tweet extends Model {
    @Column(name = "remote_id", unique = true, onUniqueConflict = Column.ConflictAction.REPLACE)
    public long    uid;
    @Column(name = "text")
