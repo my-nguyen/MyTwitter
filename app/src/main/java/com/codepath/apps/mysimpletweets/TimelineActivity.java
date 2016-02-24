@@ -7,12 +7,11 @@ import android.net.NetworkInfo;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ListView;
 
 import com.codepath.apps.mysimpletweets.models.Tweet;
 import com.codepath.apps.mysimpletweets.models.User;
@@ -31,12 +30,12 @@ import butterknife.ButterKnife;
 
 public class TimelineActivity extends AppCompatActivity implements ComposeFragment.ComposeFragmentListener {
    private static final int   REQUEST_CODE = 100;
-   private TwitterClient      mClient;
-   private List<Tweet>        mTweets;
-   private TweetsArrayAdapter mAdapter;
-   private User               mCurrentUser = null;
+   private TwitterClient         mClient;
+   private List<Tweet>           mTweets;
+   private TweetsRecyclerAdapter mAdapter;
+   private User                  mCurrentUser = null;
    @Bind(R.id.swipe_container)   SwipeRefreshLayout   mSwipeContainer;
-   @Bind(R.id.tweets_view)       ListView             mListView;
+   @Bind(R.id.tweets_view)       RecyclerView         mListView;
 
    @Override
    protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +44,7 @@ public class TimelineActivity extends AppCompatActivity implements ComposeFragme
 
       ButterKnife.bind(this);
       // Attach the listener to the AdapterView onCreate
+      /*
       mListView.setOnScrollListener(new EndlessScrollListener() {
          @Override
          public boolean onLoadMore(int page, int totalItemsCount) {
@@ -55,12 +55,15 @@ public class TimelineActivity extends AppCompatActivity implements ComposeFragme
             return true;
          }
       });
+      */
       // create an ArrayList data source
       mTweets = new ArrayList<>();
       // construct an adapter from the data source
-      mAdapter = new TweetsArrayAdapter(this, mTweets);
+      mAdapter = new TweetsRecyclerAdapter(mTweets);
       // connect the adapter to the ListView
       mListView.setAdapter(mAdapter);
+      // set layout manager to position the items
+      mListView.setLayoutManager(new LinearLayoutManager(this));
       // get the singleton client
       mClient = TwitterApplication.getRestClient();
       // populate timeline upon startup
@@ -81,6 +84,7 @@ public class TimelineActivity extends AppCompatActivity implements ComposeFragme
             android.R.color.holo_green_light,
             android.R.color.holo_orange_light,
             android.R.color.holo_red_light);
+      /*
       // set up click which leads to Tweet detail screen
       mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
          @Override
@@ -90,6 +94,7 @@ public class TimelineActivity extends AppCompatActivity implements ComposeFragme
             detailFragment.show(getSupportFragmentManager(), "DETAIL_FRAGMENT");
          }
       });
+      */
    }
 
    @Override
@@ -120,14 +125,18 @@ public class TimelineActivity extends AppCompatActivity implements ComposeFragme
          // extract the Tweet created in the ComposeActivity
          Tweet tweet = (Tweet)data.getExtras().getSerializable("TWEET_OUT");
          // add the Tweet at the very first position in the adapter
-         mAdapter.insert(tweet, 0);
+         // mAdapter.insert(tweet, 0);
+         mTweets.add(0, tweet);
+         mAdapter.notifyItemInserted(0);
       }
    }
 
    @Override
    public void onFinishComposeFragment(Tweet tweet) {
       // add the Tweet at the very first position in the adapter
-      mAdapter.insert(tweet, 0);
+      // mAdapter.insert(tweet, 0);
+      mTweets.add(0, tweet);
+      mAdapter.notifyItemInserted(0);
    }
 
    // lowestId == 0 means this is a fresh new feed of 25 tweets
@@ -135,11 +144,19 @@ public class TimelineActivity extends AppCompatActivity implements ComposeFragme
    private void populateTimeline(final long lowestId) {
       if (!isNetworkAvailable() || !isOnline()) {
          Log.d("NGUYEN", "Network isn't available");
-         mAdapter.clear();
+         // mAdapter.clear();
+         int count = mAdapter.getItemCount();
+         if (count > 0) {
+            mTweets.clear();
+            mAdapter.notifyItemRangeRemoved(0, count);
+         }
          // load tweet feed from local database instead of from twitter.com
          List<Tweet> tweets = Tweet.getAll();
          Log.d("NGUYEN", "fetched " + tweets.size() + " tweets from the database");
-         mAdapter.addAll(tweets);
+         // mAdapter.addAll(tweets);
+         count = mAdapter.getItemCount();
+         mTweets.addAll(tweets);
+         mAdapter.notifyItemRangeInserted(count, tweets.size());
          // signal swipe refresh has finished
          mSwipeContainer.setRefreshing(false);
       }
@@ -150,15 +167,23 @@ public class TimelineActivity extends AppCompatActivity implements ComposeFragme
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
                Log.d("NGUYEN", response.toString());
                // clear adapter and database on a fresh new feed of tweets
+               int count = mAdapter.getItemCount();
                if (lowestId == 0) {
                   Tweet.deleteAll();
-                  mAdapter.clear();
+                  // mAdapter.clear();
+                  if (count > 0) {
+                     mTweets.clear();
+                     mAdapter.notifyItemRangeRemoved(0, count);
+                  }
                }
                // create tweet objects (and save them to local database) from JSON feed from twitter.com
                List<Tweet> tweets = Tweet.fromJSONArray(response);
                Log.d("NGUYEN", "fetched " + tweets.size() + " tweets from twitter.com");
                // with a load-more feed (endless scroll), just add the feed to the current list of feed
-               mAdapter.addAll(tweets);
+               // mAdapter.addAll(tweets);
+               count = mAdapter.getItemCount();
+               mTweets.addAll(tweets);
+               mAdapter.notifyItemRangeInserted(count, tweets.size());
                // signal swipe refresh has finished
                mSwipeContainer.setRefreshing(false);
             }
@@ -174,10 +199,16 @@ public class TimelineActivity extends AppCompatActivity implements ComposeFragme
 
    // this method finds the new lowest id, for subsequent fetches beyond the current 25 tweets
    private long findLowestId() {
+      /*
       long lowest = ((Tweet)mAdapter.getItem(0)).uid;
       for (int i = 1; i < mAdapter.getCount(); i++)
          if (lowest > ((Tweet)mAdapter.getItem(i)).uid)
             lowest = ((Tweet)mAdapter.getItem(i)).uid;
+            */
+      long lowest = mTweets.get(0).uid;
+      for (int i = 1; i < mTweets.size(); i++)
+         if (lowest > mTweets.get(i).uid)
+            lowest = mTweets.get(i).uid;
       return lowest;
    }
 
