@@ -72,7 +72,6 @@ public class DetailFragment extends DialogFragment implements ReplyFragment.Repl
       super.onViewCreated(view, savedInstanceState);
       // extract Tweet and User objects from bundle
       final Tweet tweet = (Tweet)Parcels.unwrap(getArguments().getParcelable("TWEET"));
-      Log.d("NGUYEN", "TWEET: " + tweet);
       final User currentUser = (User)Parcels.unwrap(getArguments().getParcelable("CURRENT_USER"));
       // set up the TitleBar
       getDialog().setTitle("Tweet");

@@ -48,23 +48,11 @@
         android:autoLink="all"
         android:linksClickable="true"
         />
-    <ImageView
-        android:id="@+id/image"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/text"
-        android:layout_alignLeft="@id/text"
-        android:layout_alignParentRight="true"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="10dp"
-        android:adjustViewBounds="true"
-        android:scaleType="fitXY"
-        android:minHeight="30dp"/>
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="15dp"
-        android:layout_below="@id/image"
-        android:layout_alignLeft="@id/image"
+        android:layout_height="30dp"
+        android:layout_below="@id/text"
+        android:layout_alignLeft="@id/text"
         >
         <ImageButton
             android:id="@+id/reply"
@@ -88,6 +76,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_toRightOf="@id/retweet"
+            android:layout_alignTop="@id/retweet"
+            android:layout_alignBottom="@id/retweet"
+            android:gravity="center"
             />
         <ImageButton
             android:id="@+id/favorite"
@@ -103,6 +94,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_toRightOf="@id/favorite"
+            android:layout_alignTop="@id/favorite"
+            android:layout_alignBottom="@id/favorite"
+            android:gravity="center"
             />
     </RelativeLayout>
 </RelativeLayout>

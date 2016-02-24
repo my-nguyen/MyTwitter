@@ -33,7 +33,6 @@ import butterknife.ButterKnife;
       @Bind(R.id.screen_name)    TextView          screenName;
       @Bind(R.id.time_ago)       TextView          timeAgo;
       @Bind(R.id.text)           LinkifiedTextView text;
-      @Bind(R.id.image)          ImageView         image;
       @Bind(R.id.retweet_count)  TextView          retweetCount;
       @Bind(R.id.favorite_count) TextView          favoriteCount;
 
@@ -69,10 +68,6 @@ import butterknife.ButterKnife;
       holder.screenName.setText("@" + tweet.user.screenName);
       holder.timeAgo.setText(abbreviate(getRelativeTimeAgo(tweet.createdAt)));
       holder.text.setText(tweet.text);
-      if (tweet.mediaUrl != null) {
-         int widthPixels = getContext().getResources().getDisplayMetrics().widthPixels;
-         Picasso.with(getContext()).load(tweet.mediaUrl).resize(widthPixels, 0).into(holder.image);
-      }
       if (tweet.retweetCount > 0)
          holder.retweetCount.setText(Integer.toString(tweet.retweetCount));
       if (tweet.favoriteCount > 0)
