@@ -43,19 +43,6 @@ public class TimelineActivity extends AppCompatActivity implements ComposeFragme
       setContentView(R.layout.activity_timeline);
 
       ButterKnife.bind(this);
-      // Attach the listener to the AdapterView onCreate
-      /*
-      mListView.setOnScrollListener(new ListViewScrollListener() {
-         @Override
-         public boolean onLoadMore(int page, int totalItemsCount) {
-            // triggered only when new data needs to be appended to the list, in this case when
-            // lowestId is not 0.
-            populateTimeline(findLowestId());
-            // returns true ONLY if more data is actually being loaded; false otherwise.
-            return true;
-         }
-      });
-      */
       // create an ArrayList data source
       mTweets = new ArrayList<>();
       // construct an adapter from the data source
@@ -63,7 +50,17 @@ public class TimelineActivity extends AppCompatActivity implements ComposeFragme
       // connect the adapter to the ListView
       mListView.setAdapter(mAdapter);
       // set layout manager to position the items
-      mListView.setLayoutManager(new LinearLayoutManager(this));
+      LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+      mListView.setLayoutManager(layoutManager);
+      // mListView.setOnScrollListener(new ListViewScrollListener() {
+      mListView.addOnScrollListener(new RecyclerViewScrollListener(layoutManager) {
+         @Override
+         public void onLoadMore(int page, int totalItemsCount) {
+            // triggered only when new data needs to be appended to the list, in this case when
+            // lowestId is not 0.
+            populateTimeline(findLowestId());
+         }
+      });
       // get the singleton client
       mClient = TwitterApplication.getRestClient();
       // populate timeline upon startup
