@@ -5,7 +5,7 @@ import android.widget.AbsListView;
 /**
  * Created by My on 2/16/2016.
  */
-public abstract class EndlessScrollListener implements AbsListView.OnScrollListener {
+public abstract class ListViewScrollListener implements AbsListView.OnScrollListener {
    // the minimum amount of items to have below your current scroll position before loading more.
    private int visibleThreshold = 5;
    // the current offset index of data you have loaded
@@ -17,14 +17,14 @@ public abstract class EndlessScrollListener implements AbsListView.OnScrollListe
    // sets the starting page index
    private int startingPageIndex = 0;
 
-   public EndlessScrollListener() {
+   public ListViewScrollListener() {
    }
 
-   public EndlessScrollListener(int visibleThreshold) {
+   public ListViewScrollListener(int visibleThreshold) {
       this.visibleThreshold = visibleThreshold;
    }
 
-   public EndlessScrollListener(int visibleThreshold, int startPage) {
+   public ListViewScrollListener(int visibleThreshold, int startPage) {
       this.visibleThreshold = visibleThreshold;
       this.startingPageIndex = startPage;
       this.currentPage = startPage;

@@ -5,7 +5,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -22,7 +21,7 @@ import butterknife.ButterKnife;
  */
 // create the basic adapter extending from RecyclerView.Adapter
 // note that we specify the custom ViewHolder which gives us access to our views
-public class TweetsRecyclerAdapter extends RecyclerView.Adapter<TweetsRecyclerAdapter.ViewHolder> {
+public class TweetRecyclerViewAdapter extends RecyclerView.Adapter<TweetRecyclerViewAdapter.ViewHolder> {
    // provide a direct reference to each of the views within a data item used to cache the views
    // within the item layout for fast access
    public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -49,7 +48,7 @@ public class TweetsRecyclerAdapter extends RecyclerView.Adapter<TweetsRecyclerAd
    private Context      mContext;
 
    // Pass in the Tweet array into the constructor
-   public TweetsRecyclerAdapter(List<Tweet> tweets) {
+   public TweetRecyclerViewAdapter(List<Tweet> tweets) {
       mTweets = tweets;
    }
 

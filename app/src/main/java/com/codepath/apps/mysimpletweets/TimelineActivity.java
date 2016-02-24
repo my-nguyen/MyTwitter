@@ -32,7 +32,7 @@ public class TimelineActivity extends AppCompatActivity implements ComposeFragme
    private static final int   REQUEST_CODE = 100;
    private TwitterClient         mClient;
    private List<Tweet>           mTweets;
-   private TweetsRecyclerAdapter mAdapter;
+   private TweetRecyclerViewAdapter mAdapter;
    private User                  mCurrentUser = null;
    @Bind(R.id.swipe_container)   SwipeRefreshLayout   mSwipeContainer;
    @Bind(R.id.tweets_view)       RecyclerView         mListView;
@@ -45,7 +45,7 @@ public class TimelineActivity extends AppCompatActivity implements ComposeFragme
       ButterKnife.bind(this);
       // Attach the listener to the AdapterView onCreate
       /*
-      mListView.setOnScrollListener(new EndlessScrollListener() {
+      mListView.setOnScrollListener(new ListViewScrollListener() {
          @Override
          public boolean onLoadMore(int page, int totalItemsCount) {
             // triggered only when new data needs to be appended to the list, in this case when
@@ -59,7 +59,7 @@ public class TimelineActivity extends AppCompatActivity implements ComposeFragme
       // create an ArrayList data source
       mTweets = new ArrayList<>();
       // construct an adapter from the data source
-      mAdapter = new TweetsRecyclerAdapter(mTweets);
+      mAdapter = new TweetRecyclerViewAdapter(mTweets);
       // connect the adapter to the ListView
       mListView.setAdapter(mAdapter);
       // set layout manager to position the items

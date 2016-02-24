@@ -26,7 +26,7 @@ import butterknife.ButterKnife;
  * Created by My on 2/16/2016.
  */
 // this class takes the Tweet objects and turns them into Views to be displayed in the ListView
-   public class TweetsArrayAdapter extends ArrayAdapter<Tweet> {
+   public class TweetArrayAdapter extends ArrayAdapter<Tweet> {
    static class ViewHolder {
       @Bind(R.id.profile_image)  ImageView         profileImage;
       @Bind(R.id.name)           TextView          name;
@@ -41,7 +41,7 @@ import butterknife.ButterKnife;
       }
    }
 
-   public TweetsArrayAdapter(Context context, List<Tweet> tweets) {
+   public TweetArrayAdapter(Context context, List<Tweet> tweets) {
       // super(context, android.R.layout.simple_list_item_1, tweets);
       super(context, 0, tweets);
    }
