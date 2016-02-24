@@ -30,10 +30,10 @@ import butterknife.ButterKnife;
 
 public class TimelineActivity extends AppCompatActivity implements ComposeFragment.ComposeFragmentListener {
    private static final int   REQUEST_CODE = 100;
-   private TwitterClient         mClient;
-   private List<Tweet>           mTweets;
+   private TwitterClient            mClient;
+   private List<Tweet>              mTweets;
    private TweetRecyclerViewAdapter mAdapter;
-   private User                  mCurrentUser = null;
+   private User                     mCurrentUser = null;
    @Bind(R.id.swipe_container)   SwipeRefreshLayout   mSwipeContainer;
    @Bind(R.id.tweets_view)       RecyclerView         mListView;
 
@@ -45,8 +45,12 @@ public class TimelineActivity extends AppCompatActivity implements ComposeFragme
       ButterKnife.bind(this);
       // create an ArrayList data source
       mTweets = new ArrayList<>();
+      // get the singleton client
+      mClient = TwitterApplication.getRestClient();
+      // fetch and save the current user's credentials, for use in composing a new Tweet
+      getUserCredentials();
       // construct an adapter from the data source
-      mAdapter = new TweetRecyclerViewAdapter(mTweets);
+      mAdapter = new TweetRecyclerViewAdapter(this, mTweets, mCurrentUser);
       // connect the adapter to the ListView
       mListView.setAdapter(mAdapter);
       // set layout manager to position the items
@@ -61,12 +65,8 @@ public class TimelineActivity extends AppCompatActivity implements ComposeFragme
             populateTimeline(findLowestId());
          }
       });
-      // get the singleton client
-      mClient = TwitterApplication.getRestClient();
       // populate timeline upon startup
       populateTimeline(0);
-      // fetch and save the current user's credentials, for use in composing a new Tweet
-      getUserCredentials();
       // set up refresh listener
       mSwipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
          @Override
