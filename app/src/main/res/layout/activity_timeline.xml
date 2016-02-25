@@ -8,9 +8,10 @@
     tools:context="com.codepath.apps.mysimpletweets.TimelineActivity"
     >
     <fragment
-        android:name="com.codepath.apps.mysimpletweets.TweetListFragment"
         android:id="@+id/tweet_list_fragment"
+        android:name="com.codepath.apps.mysimpletweets.TweetListFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        tools:layout="@layout/fragment_tweet_list"
         />
 </android.support.design.widget.CoordinatorLayout>
