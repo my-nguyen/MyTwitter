@@ -11,6 +11,9 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -30,7 +33,6 @@ import java.util.List;
  * Created by My on 2/24/2016.
  */
 public class TweetListFragment extends Fragment {
-   private static final int REQUEST_CODE = 100;
    private TwitterClient mClient;
    private List<Tweet> mTweets;
    private TweetRecyclerViewAdapter mAdapter;
@@ -92,18 +94,35 @@ public class TweetListFragment extends Fragment {
       // get the singleton client
       mClient = TwitterApplication.getRestClient();
       // fetch and save the current user's credentials, for use in composing a new Tweet
-      getUserCredentials();
+      mCurrentUser = getUserCredentials();
       // construct an adapter from the data source
       mAdapter = new TweetRecyclerViewAdapter(getActivity(), mTweets, mCurrentUser);
       // populate timeline upon startup
       populateTimeline(0);
    }
 
-   // lowestId == 0 means this is a fresh new feed of 25 tweets
-   // lowestId != 0 means to fetch the next 25 tweets beyond the current list of tweets in the timeline
+   @Override
+   public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+      inflater.inflate(R.menu.timeline, menu);
+   }
+
+   @Override
+   public boolean onOptionsItemSelected(MenuItem item) {
+      switch (item.getItemId()) {
+         case R.id.compose:
+            ComposeFragment dialog = ComposeFragment.newInstance(mCurrentUser);
+            dialog.show(getFragmentManager(), "COMPOSE_FRAGMENT");
+            return true;
+         default:
+            return super.onOptionsItemSelected(item);
+      }
+   }
+
+   // if lowestId == 0, fetch a fresh new feed of 25 tweets
+   // if lowestId != 0, fetch the next 25 tweets beyond the current list of tweets in the timeline
    private void populateTimeline(final long lowestId) {
       if (!isNetworkAvailable() || !isOnline()) {
-         Log.d("NGUYEN", "Network isn't available");
+         Log.d("NGUYEN", "THERE IS NO NETWORK CONNECTION.");
          // mAdapter.clear();
          int count = mAdapter.getItemCount();
          if (count > 0) {
@@ -157,6 +176,17 @@ public class TweetListFragment extends Fragment {
       }
    }
 
+   private User getUserCredentials() {
+      final User[] user = new User[1];
+      mClient.getUserCredentials(new JsonHttpResponseHandler() {
+         @Override
+         public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+            user[0] = User.fromJsonObject(response);
+         }
+      });
+      return user[0];
+   }
+
    // this method finds the new lowest id, for subsequent fetches beyond the current 25 tweets
    private long findLowestId() {
       long lowest = mTweets.get(0).uid;
@@ -164,15 +194,6 @@ public class TweetListFragment extends Fragment {
          if (lowest > mTweets.get(i).uid)
             lowest = mTweets.get(i).uid;
       return lowest;
-   }
-
-   private void getUserCredentials() {
-      mClient.getUserCredentials(new JsonHttpResponseHandler() {
-         @Override
-         public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-            mCurrentUser = User.fromJsonObject(response);
-         }
-      });
    }
 
    private Boolean isNetworkAvailable() {
