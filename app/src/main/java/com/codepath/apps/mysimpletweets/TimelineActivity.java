@@ -65,6 +65,9 @@ public class TimelineActivity extends AppCompatActivity implements ComposeFragme
             populateTimeline(findLowestId());
          }
       });
+      // add dividers (decorators) between RecyclerView items
+      RecyclerView.ItemDecoration itemDecoration = new DividerItemDecoration(this, DividerItemDecoration.VERTICAL_LIST);
+      mListView.addItemDecoration(itemDecoration);
       // populate timeline upon startup
       populateTimeline(0);
       // set up refresh listener
