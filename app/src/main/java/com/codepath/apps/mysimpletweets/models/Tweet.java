@@ -92,10 +92,16 @@ public class Tweet extends Model {
             tweet.mediaUrl = mediaJsonArray.getJSONObject(0).getString("media_url");
             String url = mediaJsonArray.optJSONObject(0).getString("url");
             String shortenedUrl = "https://t.co/u...";
+            /*
             if (text.contains(shortenedUrl))
                tweet.text = text.replace(shortenedUrl, "").trim();
             else if (text.contains(url))
                tweet.text = text.replace(url, "").trim();
+               */
+            // the code to replace URL above is buggy. so for now just copy the text
+            // sample text that will break code:
+            // "RT @FOXSports: 'Boy in plastic bag' Messi jersey receives real, signed version. foxs.pt/1TB5y05 (Pic: @UNICEFargentina) https://t.c…"
+            tweet.text = text;
          }
          tweet.user = User.findOrCreateFromJsonObject(jsonObject.getJSONObject("user"));
          tweet.save();

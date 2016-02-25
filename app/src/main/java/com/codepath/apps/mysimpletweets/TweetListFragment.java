@@ -159,7 +159,6 @@ public class TweetListFragment extends Fragment {
                List<Tweet> tweets = Tweet.fromJSONArray(response);
                Log.d("NGUYEN", "fetched " + tweets.size() + " tweets from twitter.com");
                // with a load-more feed (endless scroll), just add the feed to the current list of feed
-               // mAdapter.addAll(tweets);
                count = mAdapter.getItemCount();
                mTweets.addAll(tweets);
                mAdapter.notifyItemRangeInserted(count, tweets.size());
