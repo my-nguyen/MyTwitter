@@ -62,7 +62,7 @@ public class DetailFragment extends DialogFragment implements ReplyFragment.Repl
    @Nullable
    @Override
    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-      View view = inflater.inflate(R.layout.fragment_detail, container);
+      View view = inflater.inflate(R.layout.fragment_detail_image, container);
       ButterKnife.bind(this, view);
       return view;
    }
