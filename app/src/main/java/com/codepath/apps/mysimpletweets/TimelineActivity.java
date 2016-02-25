@@ -81,17 +81,6 @@ public class TimelineActivity extends AppCompatActivity implements ComposeFragme
             android.R.color.holo_green_light,
             android.R.color.holo_orange_light,
             android.R.color.holo_red_light);
-      /*
-      // set up click which leads to Tweet detail screen
-      mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-         @Override
-         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            Tweet tweet = mTweets.get(position);
-            DetailFragment detailFragment = DetailFragment.newInstance(tweet, mCurrentUser);
-            detailFragment.show(getSupportFragmentManager(), "DETAIL_FRAGMENT");
-         }
-      });
-      */
    }
 
    @Override
@@ -196,12 +185,6 @@ public class TimelineActivity extends AppCompatActivity implements ComposeFragme
 
    // this method finds the new lowest id, for subsequent fetches beyond the current 25 tweets
    private long findLowestId() {
-      /*
-      long lowest = ((Tweet)mAdapter.getItem(0)).uid;
-      for (int i = 1; i < mAdapter.getCount(); i++)
-         if (lowest > ((Tweet)mAdapter.getItem(i)).uid)
-            lowest = ((Tweet)mAdapter.getItem(i)).uid;
-            */
       long lowest = mTweets.get(0).uid;
       for (int i = 1; i < mTweets.size(); i++)
          if (lowest > mTweets.get(i).uid)

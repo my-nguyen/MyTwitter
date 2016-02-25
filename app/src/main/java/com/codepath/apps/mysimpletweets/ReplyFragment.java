@@ -20,10 +20,10 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.codepath.apps.mysimpletweets.models.Tweet;
 import com.codepath.apps.mysimpletweets.models.User;
 import com.loopj.android.http.JsonHttpResponseHandler;
-import com.squareup.picasso.Picasso;
 
 import org.apache.http.Header;
 import org.json.JSONObject;
@@ -82,14 +82,14 @@ public class ReplyFragment extends DialogFragment {
 
       // populate data into the subviews
       profileImage.setImageResource(android.R.color.transparent);
-      Picasso.with(getActivity()).load(currentUser.profileImageUrl).into(profileImage);
+      Glide.with(getActivity()).load(currentUser.profileImageUrl).into(profileImage);
       cancelButton.setOnClickListener(new View.OnClickListener() {
          @Override
          public void onClick(View v) {
             dismiss();
          }
       });
-      Picasso.with(getActivity()).load(R.drawable.ic_down_arrow).into(downArrow);
+      Glide.with(getActivity()).load(R.drawable.ic_down_arrow).into(downArrow);
       caption.setText("In reply to " + tweet.user.name);
       List<String> screenNames = extractScreenNames(tweet.text, tweet.user.screenName);
       StringBuilder builder = new StringBuilder();

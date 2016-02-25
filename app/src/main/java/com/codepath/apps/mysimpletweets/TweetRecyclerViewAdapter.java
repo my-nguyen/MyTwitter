@@ -9,9 +9,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.codepath.apps.mysimpletweets.models.Tweet;
 import com.codepath.apps.mysimpletweets.models.User;
-import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -83,7 +83,7 @@ public class TweetRecyclerViewAdapter extends RecyclerView.Adapter<TweetRecycler
       Tweet tweet = mTweets.get(position);
       // Set item views based on the data model
       holder.profileImage.setImageResource(android.R.color.transparent);
-      Picasso.with(mContext).load(tweet.user.profileImageUrl).into(holder.profileImage);
+      Glide.with(mContext).load(tweet.user.profileImageUrl).into(holder.profileImage);
       holder.name.setText(tweet.user.name);
       holder.screenName.setText("@" + tweet.user.screenName);
       holder.timeAgo.setText(Utils.abbreviate(Utils.getRelativeTimeAgo(tweet.createdAt)));

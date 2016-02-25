@@ -17,10 +17,10 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.codepath.apps.mysimpletweets.models.Tweet;
 import com.codepath.apps.mysimpletweets.models.User;
 import com.loopj.android.http.JsonHttpResponseHandler;
-import com.squareup.picasso.Picasso;
 
 import org.apache.http.Header;
 import org.json.JSONObject;
@@ -49,7 +49,7 @@ public class ComposeActivity extends AppCompatActivity {
 
       // populate data into the subviews
       profileImage.setImageResource(android.R.color.transparent);
-      Picasso.with(this).load(user.profileImageUrl).into(profileImage);
+      Glide.with(this).load(user.profileImageUrl).into(profileImage);
       name.setText(user.name);
       screenName.setText("@" + user.screenName);
       cancelButton.setOnClickListener(new View.OnClickListener() {

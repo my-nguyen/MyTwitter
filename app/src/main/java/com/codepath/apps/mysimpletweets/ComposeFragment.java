@@ -1,13 +1,10 @@
 package com.codepath.apps.mysimpletweets;
 
-import android.content.Context;
-import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
-import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -22,10 +19,10 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.codepath.apps.mysimpletweets.models.Tweet;
 import com.codepath.apps.mysimpletweets.models.User;
 import com.loopj.android.http.JsonHttpResponseHandler;
-import com.squareup.picasso.Picasso;
 
 import org.apache.http.Header;
 import org.json.JSONObject;
@@ -80,7 +77,7 @@ public class ComposeFragment extends DialogFragment {
 
       // populate data into the subviews
       profileImage.setImageResource(android.R.color.transparent);
-      Picasso.with(getContext()).load(currentUser.profileImageUrl).into(profileImage);
+      Glide.with(getContext()).load(currentUser.profileImageUrl).into(profileImage);
       name.setText(currentUser.name);
       screenName.setText("@" + currentUser.screenName);
       cancelButton.setOnClickListener(new View.OnClickListener() {

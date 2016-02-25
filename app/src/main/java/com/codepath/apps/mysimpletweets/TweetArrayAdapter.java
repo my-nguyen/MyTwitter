@@ -8,8 +8,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.codepath.apps.mysimpletweets.models.Tweet;
-import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -57,7 +57,7 @@ import butterknife.ButterKnife;
       // populate data into the subviews
       // clear out the old image for a recycled view
       holder.profileImage.setImageResource(android.R.color.transparent);
-      Picasso.with(getContext()).load(tweet.user.profileImageUrl).into(holder.profileImage);
+      Glide.with(getContext()).load(tweet.user.profileImageUrl).into(holder.profileImage);
       holder.name.setText(tweet.user.name);
       holder.screenName.setText("@" + tweet.user.screenName);
       holder.timeAgo.setText(Utils.abbreviate(Utils.getRelativeTimeAgo(tweet.createdAt)));

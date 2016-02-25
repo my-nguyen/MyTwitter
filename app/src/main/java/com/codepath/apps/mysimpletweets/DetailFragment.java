@@ -14,9 +14,9 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.codepath.apps.mysimpletweets.models.Tweet;
 import com.codepath.apps.mysimpletweets.models.User;
-import com.squareup.picasso.Picasso;
 
 import org.parceler.Parcels;
 
@@ -81,13 +81,13 @@ public class DetailFragment extends DialogFragment implements ReplyFragment.Repl
       if (titleDivider != null)
          titleDivider.setBackgroundColor(Color.BLACK);
       // populate data into the subviews
-      Picasso.with(getContext()).load(tweet.user.profileImageUrl).into(profileImage);
+      Glide.with(getContext()).load(tweet.user.profileImageUrl).into(profileImage);
       name.setText(tweet.user.name);
       screenName.setText("@" + tweet.user.screenName);
       text.setText(Html.fromHtml(formatText(tweet.text)));
       if (tweet.mediaUrl != null) {
          int widthPixels = getContext().getResources().getDisplayMetrics().widthPixels;
-         Picasso.with(getContext()).load(tweet.mediaUrl).resize(widthPixels, 0).into(image);
+         Glide.with(getContext()).load(tweet.mediaUrl).into(image);
       }
       // set up the date and time
       SimpleDateFormat format = new SimpleDateFormat("EEE MMM dd HH:mm:ss ZZZZZ yyyy");
