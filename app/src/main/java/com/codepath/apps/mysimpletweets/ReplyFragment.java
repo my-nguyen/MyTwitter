@@ -21,8 +21,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.codepath.apps.mysimpletweets.models.Tweet;
-import com.codepath.apps.mysimpletweets.models.User;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
 import org.apache.http.Header;
@@ -36,7 +34,6 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 
 public class ReplyFragment extends DialogFragment {
-   private TwitterClient mClient;
    @Bind(R.id.profile_image)
    ImageView profileImage;
    @Bind(R.id.cancel_button)
@@ -82,15 +79,17 @@ public class ReplyFragment extends DialogFragment {
       getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
 
       final Tweet tweet = (Tweet)Parcels.unwrap(getArguments().getParcelable("TWEET"));
-      mClient = TwitterApplication.getRestClient();
+      // for getting user credentials and posting new status
+      final TwitterClient client = TwitterApplication.getRestClient();
 
       // populate data into the subviews
       profileImage.setImageResource(android.R.color.transparent);
-      mClient.getUserCredentials(new JsonHttpResponseHandler() {
+      client.getUserCredentials(new JsonHttpResponseHandler() {
          @Override
          public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+            // since TwitterClient.getUserCredentials() is asynchronous, currentUser contains value
+            // only having been inside onSuccess()
             User currentUser = User.fromJSONObject(response);
-            Log.d("NGUYEN", "getUserCredentials() USER: " + currentUser);
             Glide.with(getActivity()).load(currentUser.profileImageUrl).into(profileImage);
          }
       });
@@ -147,7 +146,7 @@ public class ReplyFragment extends DialogFragment {
          public void onClick(View v) {
             final String status = text.getText().toString();
             if (!TextUtils.isEmpty(status)) {
-               mClient.postStatus(status, Long.toString(tweet.uid), new JsonHttpResponseHandler() {
+               client.postStatus(status, Long.toString(tweet.uid), new JsonHttpResponseHandler() {
                   @Override
                   public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                      Log.d("NGUYEN", response.toString());

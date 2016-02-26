@@ -1,32 +1,7 @@
 package com.codepath.apps.mysimpletweets;
 
-import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-
-import com.codepath.apps.mysimpletweets.models.Tweet;
-import com.codepath.apps.mysimpletweets.models.User;
-import com.loopj.android.http.JsonHttpResponseHandler;
-
-import org.apache.http.Header;
-import org.json.JSONArray;
-import org.json.JSONObject;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by My on 2/24/2016.
@@ -37,5 +12,12 @@ public class HomeTimelineFragment extends TweetListFragment {
       super.onCreate(savedInstanceState);
       // populate timeline upon startup
       populateTimeline(0);
+   }
+
+   public void addNewTweet(Tweet tweet) {
+      // add the Tweet at the very first position in the adapter
+      // mAdapter.insert(tweet, 0);
+      mTweets.add(0, tweet);
+      mAdapter.notifyItemInserted(0);
    }
 }

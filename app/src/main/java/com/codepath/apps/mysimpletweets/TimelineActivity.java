@@ -7,12 +7,13 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.astuetz.PagerSlidingTabStrip;
 
-public class TimelineActivity extends AppCompatActivity {
+public class TimelineActivity extends AppCompatActivity implements ComposeFragment.Listener {
    @Override
    protected void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
@@ -71,11 +72,8 @@ public class TimelineActivity extends AppCompatActivity {
    public boolean onOptionsItemSelected(MenuItem item) {
       switch (item.getItemId()) {
          case R.id.compose:
-            // disable Compose menu for now
-            /*
-            ComposeFragment dialog = ComposeFragment.newInstance(mCurrentUser);
+            ComposeFragment dialog = ComposeFragment.newInstance();
             dialog.show(getSupportFragmentManager(), "COMPOSE_FRAGMENT");
-            */
             return true;
          case R.id.profile:
             Intent intent = new Intent(this, ProfileActivity.class);
@@ -86,13 +84,10 @@ public class TimelineActivity extends AppCompatActivity {
       }
    }
 
-   /*
    @Override
    public void onFinishComposeFragment(Tweet tweet) {
-      // add the Tweet at the very first position in the adapter
-      // mAdapter.insert(tweet, 0);
-      mTweets.add(0, tweet);
-      mAdapter.notifyItemInserted(0);
+      Log.d("NGUYEN", "received from ComposeFragment Tweet: " + tweet);
+      // HomeTimelineFragment fragment = getSupportFragmentManager().findFragmentById(R.id.);
+      // fragment.addNewTweet(tweet);
    }
-   */
 }
