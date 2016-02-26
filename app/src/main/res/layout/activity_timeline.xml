@@ -9,7 +9,7 @@
     >
     <fragment
         android:id="@+id/tweet_list_fragment"
-        android:name="com.codepath.apps.mysimpletweets.TweetListFragment"
+        android:name="com.codepath.apps.mysimpletweets.HomeTimelineFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:layout="@layout/fragment_tweet_list"
