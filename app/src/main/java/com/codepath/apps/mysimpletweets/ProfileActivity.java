@@ -51,9 +51,9 @@ public class ProfileActivity extends AppCompatActivity {
       TextView following = (TextView)findViewById(R.id.following);
       ImageView profileImage = (ImageView)findViewById(R.id.profile_image);
       name.setText(user.name);
-      tagLine.setText(user.tagLine);
-      followers.setText(user.followerCount + " Followers");
-      following.setText(user.followingCount + " Following");
+      tagLine.setText(user.description);
+      followers.setText(user.followersCount + " Followers");
+      following.setText(user.friendsCount + " Following");
       Glide.with(this).load(user.profileImageUrl).into(profileImage);
    }
 }

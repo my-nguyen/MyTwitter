@@ -127,10 +127,10 @@ public class HomeTimelineFragment extends TweetListFragment {
 
    // this method finds the new lowest id, for subsequent fetches beyond the current 25 tweets
    private long findLowestId() {
-      long lowest = mTweets.get(0).uid;
+      long lowest = mTweets.get(0).id;
       for (int i = 1; i < mTweets.size(); i++)
-         if (lowest > mTweets.get(i).uid)
-            lowest = mTweets.get(i).uid;
+         if (lowest > mTweets.get(i).id)
+            lowest = mTweets.get(i).id;
       return lowest;
    }
 

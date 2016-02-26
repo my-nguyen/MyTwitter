@@ -22,21 +22,21 @@ import java.util.List;
 @Table(name = "Tweets")
 public class Tweet extends Model {
    @Column(name = "remote_id", unique = true, onUniqueConflict = Column.ConflictAction.REPLACE)
-   public long    uid;
+   public long id;
    @Column(name = "text")
-   public String  text;
+   public String text;
    @Column(name = "created_at")
-   public String  createdAt;
+   public String createdAt;
    @Column(name = "retweet_count")
-   public int     retweetCount;
+   public int retweetCount;
    @Column(name = "favorite_count")
-   public int     favoriteCount;
+   public int favoriteCount;
    @Column(name = "display_url")
-   public String  displayUrl;
+   public String displayUrl;
    @Column(name = "media_url")
-   public String  mediaUrl;
+   public String mediaUrl;
    @Column(name = "user", onUpdate = Column.ForeignKeyAction.CASCADE, onDelete = Column.ForeignKeyAction.CASCADE)
-   public User    user;
+   public User user;
 
    // default constructor required for ActiveAndroid model
    public Tweet() {
@@ -46,7 +46,7 @@ public class Tweet extends Model {
    @Override
    public String toString() {
       StringBuilder builder = new StringBuilder();
-      builder.append("<").append(text).append("> <").append(uid).append("> <").append(createdAt)
+      builder.append("<").append(text).append("> <").append(id).append("> <").append(createdAt)
             .append("> <").append(retweetCount).append("> <").append(favoriteCount)
             .append("> <").append(displayUrl).append("> <").append(mediaUrl)
             .append(">\n").append(user);
@@ -67,7 +67,7 @@ public class Tweet extends Model {
    public static Tweet fromJSONObject(JSONObject jsonObject) {
       Tweet tweet = new Tweet();
       try {
-         tweet.uid = jsonObject.getLong("id");
+         tweet.id = jsonObject.getLong("id");
          tweet.createdAt = jsonObject.getString("created_at");
          tweet.retweetCount = jsonObject.getInt("retweet_count");
          tweet.favoriteCount = jsonObject.getInt("favorite_count");

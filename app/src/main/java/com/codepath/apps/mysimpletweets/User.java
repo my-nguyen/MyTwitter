@@ -19,19 +19,19 @@ import java.util.List;
 @Table(name = "Users")
 public class User extends Model {
    @Column(name = "remote_id", unique = true)
-   public long   uid;
-   @Column(name = "Name")
+   public long id;
+   @Column(name = "name")
    public String name;
    @Column(name = "screen_name")
    public String screenName;
+   @Column(name = "followers_count")
+   public int followersCount;
+   @Column(name = "friends_count")
+   public int friendsCount;
+   @Column(name = "description")
+   public String description;
    @Column(name = "profile_image_url")
    public String profileImageUrl;
-   @Column(name = "tag_line")
-   public String tagLine;
-   @Column(name = "follower_count")
-   public int followerCount;
-   @Column(name = "following_count")
-   public int followingCount;
 
    // default constructor required for ActiveAndroid model
    public User() {
@@ -47,8 +47,9 @@ public class User extends Model {
    @Override
    public String toString() {
       StringBuilder builder = new StringBuilder();
-      builder.append("<").append(name).append("> <").append(uid).append("> <").append(screenName)
-            .append("> <").append(profileImageUrl).append(">");
+      builder.append("<").append(id).append("> <").append(name).append("> <").append(screenName)
+            .append("> <").append(followersCount).append("> <").append(friendsCount).append("> <")
+            .append(description).append("> <").append(profileImageUrl).append(">");
       return builder.toString();
    }
 
@@ -60,12 +61,12 @@ public class User extends Model {
       User user = new User();
       try {
          user.name = jsonObject.getString("name");
-         user.uid = jsonObject.getLong("id");
+         user.id = jsonObject.getLong("id");
          user.screenName = jsonObject.getString("screen_name");
          user.profileImageUrl = jsonObject.getString("profile_image_url");
-         user.tagLine = jsonObject.getString("description");
-         user.followerCount = jsonObject.getInt("followers_count");
-         user.followingCount = jsonObject.getInt("friends_count");
+         user.description = jsonObject.getString("description");
+         user.followersCount = jsonObject.getInt("followers_count");
+         user.friendsCount = jsonObject.getInt("friends_count");
       } catch (JSONException e) {
          e.printStackTrace();
       }
@@ -73,12 +74,12 @@ public class User extends Model {
    }
 
    public static User findOrCreateFromJSONObject(JSONObject jsonObject) {
-      long uid = 0;
+      long id = 0;
       User user = null;
       try {
          // check whether this User already exists in the database
-         uid = jsonObject.getLong("id");
-         user = new Select().from(User.class).where("remote_id = ?", uid).executeSingle();
+         id = jsonObject.getLong("id");
+         user = new Select().from(User.class).where("remote_id = ?", id).executeSingle();
          if (user == null) {
             // only save this User if it doesn't already exist. otherwise this would generate a
             // unique constraint failure in the Users table, which would lead to a foreign key

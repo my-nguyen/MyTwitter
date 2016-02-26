@@ -146,7 +146,7 @@ public class ReplyFragment extends DialogFragment {
          public void onClick(View v) {
             final String status = text.getText().toString();
             if (!TextUtils.isEmpty(status)) {
-               client.postStatus(status, Long.toString(tweet.uid), new JsonHttpResponseHandler() {
+               client.postStatus(status, Long.toString(tweet.id), new JsonHttpResponseHandler() {
                   @Override
                   public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                      Log.d("NGUYEN", response.toString());
