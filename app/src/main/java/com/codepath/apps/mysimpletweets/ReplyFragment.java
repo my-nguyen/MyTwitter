@@ -22,7 +22,6 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.codepath.apps.mysimpletweets.models.Tweet;
-import com.codepath.apps.mysimpletweets.models.User;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
 import org.apache.http.Header;
@@ -54,11 +53,10 @@ public class ReplyFragment extends DialogFragment {
    public ReplyFragment() {
    }
 
-   public static ReplyFragment newInstance(Tweet tweet, User currentUser) {
+   public static ReplyFragment newInstance(Tweet tweet) {
       ReplyFragment fragment = new ReplyFragment();
       Bundle args = new Bundle();
       args.putParcelable("TWEET", Parcels.wrap(tweet));
-      args.putParcelable("CURRENT_USER", Parcels.wrap(currentUser));
       fragment.setArguments(args);
       return fragment;
    }
@@ -77,12 +75,11 @@ public class ReplyFragment extends DialogFragment {
       getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
 
       final Tweet tweet = (Tweet)Parcels.unwrap(getArguments().getParcelable("TWEET"));
-      final User currentUser = (User)Parcels.unwrap(getArguments().getParcelable("CURRENT_USER"));
       mClient = TwitterApplication.getRestClient();
 
       // populate data into the subviews
       profileImage.setImageResource(android.R.color.transparent);
-      Glide.with(getActivity()).load(currentUser.profileImageUrl).into(profileImage);
+      // Glide.with(getActivity()).load(currentUser.profileImageUrl).into(profileImage);
       cancelButton.setOnClickListener(new View.OnClickListener() {
          @Override
          public void onClick(View v) {

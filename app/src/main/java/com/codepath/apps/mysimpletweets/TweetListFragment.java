@@ -96,7 +96,7 @@ public class TweetListFragment extends Fragment {
       // fetch and save the current user's credentials, for use in composing a new Tweet
       mCurrentUser = getUserCredentials();
       // construct an adapter from the data source
-      mAdapter = new TweetRecyclerViewAdapter(getActivity(), mTweets, mCurrentUser);
+      mAdapter = new TweetRecyclerViewAdapter(getActivity(), mTweets);
       // populate timeline upon startup
       populateTimeline(0);
    }

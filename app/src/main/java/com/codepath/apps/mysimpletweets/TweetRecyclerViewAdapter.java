@@ -11,7 +11,6 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.codepath.apps.mysimpletweets.models.Tweet;
-import com.codepath.apps.mysimpletweets.models.User;
 
 import java.util.List;
 
@@ -48,7 +47,7 @@ public class TweetRecyclerViewAdapter extends RecyclerView.Adapter<TweetRecycler
                // gets item position
                int position = getLayoutPosition();
                Tweet tweet = mTweets.get(position);
-               DetailFragment detailFragment = DetailFragment.newInstance(tweet, mCurrentUser);
+               DetailFragment detailFragment = DetailFragment.newInstance(tweet);
                detailFragment.show(((FragmentActivity)mContext).getSupportFragmentManager(), "DETAIL_FRAGMENT");
             }
          });
@@ -57,12 +56,10 @@ public class TweetRecyclerViewAdapter extends RecyclerView.Adapter<TweetRecycler
 
    private List<Tweet>  mTweets;
    private Context      mContext;
-   private User         mCurrentUser;
 
-   public TweetRecyclerViewAdapter(Context context, List<Tweet> tweets, User currentUser) {
+   public TweetRecyclerViewAdapter(Context context, List<Tweet> tweets) {
       mContext = context;
       mTweets = tweets;
-      mCurrentUser = currentUser;
    }
 
    // usually involves inflating a layout from XML and returning the holder

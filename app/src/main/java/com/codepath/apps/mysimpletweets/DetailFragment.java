@@ -16,7 +16,6 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.codepath.apps.mysimpletweets.models.Tweet;
-import com.codepath.apps.mysimpletweets.models.User;
 
 import org.parceler.Parcels;
 
@@ -50,11 +49,10 @@ public class DetailFragment extends DialogFragment implements ReplyFragment.Repl
    public DetailFragment() {
    }
 
-   public static DetailFragment newInstance(Tweet tweet, User currentUser) {
+   public static DetailFragment newInstance(Tweet tweet) {
       DetailFragment fragment = new DetailFragment();
       Bundle args = new Bundle();
       args.putParcelable("TWEET", Parcels.wrap(tweet));
-      args.putParcelable("CURRENT_USER", Parcels.wrap(currentUser));
       fragment.setArguments(args);
       return fragment;
    }
@@ -72,7 +70,6 @@ public class DetailFragment extends DialogFragment implements ReplyFragment.Repl
       super.onViewCreated(view, savedInstanceState);
       // extract Tweet and User objects from bundle
       final Tweet tweet = (Tweet)Parcels.unwrap(getArguments().getParcelable("TWEET"));
-      final User currentUser = (User)Parcels.unwrap(getArguments().getParcelable("CURRENT_USER"));
       // set up the TitleBar
       getDialog().setTitle("Tweet");
       // set up the title divider
@@ -115,7 +112,7 @@ public class DetailFragment extends DialogFragment implements ReplyFragment.Repl
       reply.setOnClickListener(new View.OnClickListener() {
          @Override
          public void onClick(View v) {
-            ReplyFragment replyFragment = ReplyFragment.newInstance(tweet, currentUser);
+            ReplyFragment replyFragment = ReplyFragment.newInstance(tweet);
             replyFragment.setTargetFragment(DetailFragment.this, 300);
             replyFragment.show(getFragmentManager(), "REPLY_FRAGMENT");
          }
