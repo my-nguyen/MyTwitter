@@ -71,10 +71,6 @@ public class TimelineActivity extends AppCompatActivity implements ComposeFragme
    @Override
    public boolean onOptionsItemSelected(MenuItem item) {
       switch (item.getItemId()) {
-         case R.id.compose:
-            ComposeFragment dialog = ComposeFragment.newInstance();
-            dialog.show(getSupportFragmentManager(), "COMPOSE_FRAGMENT");
-            return true;
          case R.id.profile:
             Intent intent = new Intent(this, ProfileActivity.class);
             startActivity(intent);

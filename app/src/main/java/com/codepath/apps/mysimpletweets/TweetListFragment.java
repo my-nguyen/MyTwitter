@@ -2,6 +2,7 @@ package com.codepath.apps.mysimpletweets;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -23,6 +24,7 @@ public class TweetListFragment extends Fragment {
    protected SwipeRefreshLayout mSwipeContainer;
    protected RecyclerView mListView;
    protected LinearLayoutManager mLayoutManager;
+   protected FloatingActionButton mFABCompose;
 
    // creation lifecycle event
    @Override
@@ -46,6 +48,7 @@ public class TweetListFragment extends Fragment {
       mSwipeContainer = (SwipeRefreshLayout)view.findViewById(R.id.swipe_refresh);
       // set up RecyclerView
       mListView = (RecyclerView)view.findViewById(R.id.tweet_list);
+      mFABCompose = (FloatingActionButton)view.findViewById(R.id.fab_compose);
       // connect the adapter to the ListView
       mListView.setAdapter(mAdapter);
       // set up layout manager to position the items

@@ -58,6 +58,13 @@ public class HomeTimelineFragment extends TweetListFragment {
             populateTimeline(findLowestId());
          }
       });
+      mFABCompose.setOnClickListener(new View.OnClickListener() {
+         @Override
+         public void onClick(View v) {
+            ComposeFragment dialog = ComposeFragment.newInstance();
+            dialog.show(getFragmentManager(), "COMPOSE_FRAGMENT");
+         }
+      });
       return view;
    }
 
