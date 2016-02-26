@@ -1,13 +1,14 @@
 package com.codepath.apps.mysimpletweets;
 
+import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.Window;
-import android.view.WindowManager;
+import android.view.Menu;
+import android.view.MenuItem;
 
 import com.astuetz.PagerSlidingTabStrip;
 
@@ -59,7 +60,7 @@ public class TimelineActivity extends AppCompatActivity {
          return tabTitles[position];
       }
    }
-   /*
+
    @Override
    public boolean onCreateOptionsMenu(Menu menu) {
       getMenuInflater().inflate(R.menu.timeline, menu);
@@ -70,14 +71,20 @@ public class TimelineActivity extends AppCompatActivity {
    public boolean onOptionsItemSelected(MenuItem item) {
       switch (item.getItemId()) {
          case R.id.compose:
+            // disable Compose menu for now
+            /*
             ComposeFragment dialog = ComposeFragment.newInstance(mCurrentUser);
             dialog.show(getSupportFragmentManager(), "COMPOSE_FRAGMENT");
+            */
+            return true;
+         case R.id.profile:
+            Intent intent = new Intent(this, ProfileActivity.class);
+            startActivity(intent);
             return true;
          default:
             return super.onOptionsItemSelected(item);
       }
    }
-   */
 
    /*
    @Override

@@ -27,6 +27,12 @@ public class User extends Model {
    public String screenName;
    @Column(name = "profile_image_url")
    public String profileImageUrl;
+   @Column(name = "tag_line")
+   public String tagLine;
+   @Column(name = "follower_count")
+   public int followerCount;
+   @Column(name = "following_count")
+   public int followingCount;
 
    // default constructor required for ActiveAndroid model
    public User() {
@@ -58,6 +64,9 @@ public class User extends Model {
          user.uid = jsonObject.getLong("id");
          user.screenName = jsonObject.getString("screen_name");
          user.profileImageUrl = jsonObject.getString("profile_image_url");
+         user.tagLine = jsonObject.getString("description");
+         user.followerCount = jsonObject.getInt("followers_count");
+         user.followingCount = jsonObject.getInt("friends_count");
       } catch (JSONException e) {
          e.printStackTrace();
       }

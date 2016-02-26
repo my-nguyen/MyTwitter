@@ -15,15 +15,24 @@ import java.util.List;
 /**
  * Created by My on 2/25/2016.
  */
-public class MentionsTimelineFragment extends TweetListFragment {
+public class UserTimelineFragment extends TweetListFragment {
    @Override
    public void onCreate(@Nullable Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
       populateTimeline();
    }
 
+   public static UserTimelineFragment newInstance(String screenName) {
+      UserTimelineFragment fragment = new UserTimelineFragment();
+      Bundle args = new Bundle();
+      args.putString("SCREEN_NAME", screenName);
+      fragment.setArguments(args);
+      return fragment;
+   }
+
    private void populateTimeline() {
-      mClient.getMentionsTimeline(new JsonHttpResponseHandler() {
+      String screenName = getArguments().getString("SCREEN_NAME");
+      mClient.getUserTimeline(screenName, new JsonHttpResponseHandler() {
          @Override
          public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
             Log.d("NGUYEN", response.toString());

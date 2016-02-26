@@ -99,23 +99,6 @@ public class TweetListFragment extends Fragment {
       return view;
    }
 
-   @Override
-   public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-      inflater.inflate(R.menu.timeline, menu);
-   }
-
-   @Override
-   public boolean onOptionsItemSelected(MenuItem item) {
-      switch (item.getItemId()) {
-         case R.id.compose:
-            ComposeFragment dialog = ComposeFragment.newInstance(mCurrentUser);
-            dialog.show(getFragmentManager(), "COMPOSE_FRAGMENT");
-            return true;
-         default:
-            return super.onOptionsItemSelected(item);
-      }
-   }
-
    // if lowestId == 0, fetch a fresh new feed of 25 tweets
    // if lowestId != 0, fetch the next 25 tweets beyond the current list of tweets in the timeline
    protected void populateTimeline(final long lowestId) {
