@@ -10,7 +10,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.parceler.Parcel;
 
-import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -57,7 +56,7 @@ public class User extends Model {
       new Delete().from(User.class).execute();
    }
 
-   public static User fromJsonObject(JSONObject jsonObject) {
+   public static User fromJSONObject(JSONObject jsonObject) {
       User user = new User();
       try {
          user.name = jsonObject.getString("name");
@@ -73,7 +72,7 @@ public class User extends Model {
       return user;
    }
 
-   public static User findOrCreateFromJsonObject(JSONObject jsonObject) {
+   public static User findOrCreateFromJSONObject(JSONObject jsonObject) {
       long uid = 0;
       User user = null;
       try {
@@ -85,7 +84,7 @@ public class User extends Model {
             // unique constraint failure in the Users table, which would lead to a foreign key
             // constraint failure in the associated Tweets table, resulting in the Tweet record not
             // getting saved
-            user = User.fromJsonObject(jsonObject);
+            user = User.fromJSONObject(jsonObject);
             user.save();
          }
       } catch (JSONException e) {

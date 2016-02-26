@@ -22,6 +22,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.codepath.apps.mysimpletweets.models.Tweet;
+import com.codepath.apps.mysimpletweets.models.User;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
 import org.apache.http.Header;
@@ -35,15 +36,21 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 
 public class ReplyFragment extends DialogFragment {
-   private TwitterClient   mClient;
-   @Bind(R.id.profile_image)  ImageView   profileImage;
-   @Bind(R.id.cancel_button)  ImageButton cancelButton;
-   @Bind(R.id.down_arrow)     ImageView   downArrow;
-   @Bind(R.id.caption)        TextView    caption;
-   @Bind(R.id.text)           EditText    text;
-   @Bind(R.id.text_count)     TextView    textCount;
-   @Bind(R.id.tweet_button)   Button      tweetButton;
-
+   private TwitterClient mClient;
+   @Bind(R.id.profile_image)
+   ImageView profileImage;
+   @Bind(R.id.cancel_button)
+   ImageButton cancelButton;
+   @Bind(R.id.down_arrow)
+   ImageView downArrow;
+   @Bind(R.id.caption)
+   TextView caption;
+   @Bind(R.id.text)
+   EditText text;
+   @Bind(R.id.text_count)
+   TextView textCount;
+   @Bind(R.id.tweet_button)
+   Button tweetButton;
 
    public interface ReplyFragmentListener {
       void onFinishReplyFragment(Tweet tweet);
@@ -79,7 +86,14 @@ public class ReplyFragment extends DialogFragment {
 
       // populate data into the subviews
       profileImage.setImageResource(android.R.color.transparent);
-      // Glide.with(getActivity()).load(currentUser.profileImageUrl).into(profileImage);
+      mClient.getUserCredentials(new JsonHttpResponseHandler() {
+         @Override
+         public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+            User currentUser = User.fromJSONObject(response);
+            Log.d("NGUYEN", "getUserCredentials() USER: " + currentUser);
+            Glide.with(getActivity()).load(currentUser.profileImageUrl).into(profileImage);
+         }
+      });
       cancelButton.setOnClickListener(new View.OnClickListener() {
          @Override
          public void onClick(View v) {

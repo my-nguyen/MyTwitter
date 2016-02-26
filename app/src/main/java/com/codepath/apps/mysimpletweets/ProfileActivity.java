@@ -27,7 +27,7 @@ public class ProfileActivity extends AppCompatActivity {
       client.getUserCredentials(new JsonHttpResponseHandler() {
          @Override
          public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-            user = User.fromJsonObject(response);
+            user = User.fromJSONObject(response);
             getSupportActionBar().setTitle("@" + user.screenName);
             populateProfileHeader(user);
          }

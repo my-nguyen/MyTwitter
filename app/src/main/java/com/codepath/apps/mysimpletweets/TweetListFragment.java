@@ -36,7 +36,6 @@ public class TweetListFragment extends Fragment {
    protected TwitterClient mClient;
    protected List<Tweet> mTweets;
    protected TweetRecyclerViewAdapter mAdapter;
-   protected User mCurrentUser = null;
    protected SwipeRefreshLayout mSwipeContainer;
    protected RecyclerView mListView;
 
@@ -49,8 +48,6 @@ public class TweetListFragment extends Fragment {
       mTweets = new ArrayList<>();
       // get the singleton client
       mClient = TwitterApplication.getRestClient();
-      // fetch and save the current user's credentials, for use in composing a new Tweet
-      mCurrentUser = getUserCredentials();
       // construct an adapter from the data source
       mAdapter = new TweetRecyclerViewAdapter(getActivity(), mTweets);
    }
@@ -154,17 +151,6 @@ public class TweetListFragment extends Fragment {
             }
          });
       }
-   }
-
-   private User getUserCredentials() {
-      final User[] user = new User[1];
-      mClient.getUserCredentials(new JsonHttpResponseHandler() {
-         @Override
-         public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-            user[0] = User.fromJsonObject(response);
-         }
-      });
-      return user[0];
    }
 
    // this method finds the new lowest id, for subsequent fetches beyond the current 25 tweets

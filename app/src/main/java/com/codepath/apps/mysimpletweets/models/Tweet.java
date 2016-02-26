@@ -1,7 +1,5 @@
 package com.codepath.apps.mysimpletweets.models;
 
-import android.util.Log;
-
 import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
@@ -13,7 +11,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.parceler.Parcel;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -103,7 +100,7 @@ public class Tweet extends Model {
             // "RT @FOXSports: 'Boy in plastic bag' Messi jersey receives real, signed version. foxs.pt/1TB5y05 (Pic: @UNICEFargentina) https://t.c…"
             tweet.text = text;
          }
-         tweet.user = User.findOrCreateFromJsonObject(jsonObject.getJSONObject("user"));
+         tweet.user = User.findOrCreateFromJSONObject(jsonObject.getJSONObject("user"));
          tweet.save();
       } catch (JSONException e) {
          e.printStackTrace();
