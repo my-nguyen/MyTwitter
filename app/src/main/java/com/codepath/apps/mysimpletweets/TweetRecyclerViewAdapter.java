@@ -25,13 +25,18 @@ public class TweetRecyclerViewAdapter extends RecyclerView.Adapter<TweetRecycler
    // provide a direct reference to each of the views within a data item used to cache the views
    // within the item layout for fast access
    public class ViewHolder extends RecyclerView.ViewHolder {
-      @Bind(R.id.profile_image)  ImageView         profileImage;
-      @Bind(R.id.name)           TextView          name;
-      @Bind(R.id.screen_name)    TextView          screenName;
-      @Bind(R.id.time_ago)       TextView          timeAgo;
-      @Bind(R.id.text)           LinkifiedTextView text;
-      // @Bind(R.id.retweet_count)  TextView          retweetCount;
-      // @Bind(R.id.favorite_count) TextView          favoriteCount;
+      @Bind(R.id.profile_image)
+      ImageView profileImage;
+      @Bind(R.id.name)
+      TextView name;
+      @Bind(R.id.screen_name)
+      TextView screenName;
+      @Bind(R.id.time_ago)
+      TextView timeAgo;
+      @Bind(R.id.text)
+      LinkifiedTextView text;
+      // @Bind(R.id.retweet_count)  TextView retweetCount;
+      // @Bind(R.id.favorite_count) TextView favoriteCount;
 
       // we also create a constructor that accepts the entire item row and does the view lookups to
       // find each subview

@@ -19,15 +19,24 @@ import butterknife.ButterKnife;
  * Created by My on 2/16/2016.
  */
 // this class takes the Tweet objects and turns them into Views to be displayed in the ListView
-   public class TweetArrayAdapter extends ArrayAdapter<Tweet> {
+public class TweetArrayAdapter extends ArrayAdapter<Tweet> {
    static class ViewHolder {
-      @Bind(R.id.profile_image)  ImageView         profileImage;
-      @Bind(R.id.name)           TextView          name;
-      @Bind(R.id.screen_name)    TextView          screenName;
-      @Bind(R.id.time_ago)       TextView          timeAgo;
-      @Bind(R.id.text)           LinkifiedTextView text;
-      @Bind(R.id.retweet_count)  TextView          retweetCount;
-      @Bind(R.id.favorite_count) TextView          favoriteCount;
+      @Bind(R.id.profile_image)
+      ImageView profileImage;
+      @Bind(R.id.name)
+      TextView name;
+      @Bind(R.id.screen_name)
+      TextView screenName;
+      @Bind(R.id.time_ago)
+      TextView timeAgo;
+      @Bind(R.id.text)
+      LinkifiedTextView text;
+      /*
+      @Bind(R.id.retweet_count)
+      TextView retweetCount;
+      @Bind(R.id.favorite_count)
+      TextView favoriteCount;
+      */
 
       public ViewHolder(View view) {
          ButterKnife.bind(this, view);
@@ -61,10 +70,12 @@ import butterknife.ButterKnife;
       holder.screenName.setText("@" + tweet.user.screenName);
       holder.timeAgo.setText(Utils.abbreviate(Utils.getRelativeTimeAgo(tweet.createdAt)));
       holder.text.setText(tweet.text);
+      /*
       if (tweet.retweetCount > 0)
          holder.retweetCount.setText(Integer.toString(tweet.retweetCount));
       if (tweet.favoriteCount > 0)
          holder.favoriteCount.setText(Integer.toString(tweet.favoriteCount));
+         */
       // return the view to be inserted into the list
       return convertView;
    }

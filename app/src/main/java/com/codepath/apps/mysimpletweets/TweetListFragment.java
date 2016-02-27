@@ -10,6 +10,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ListView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,12 +20,16 @@ import java.util.List;
  * Created by My on 2/24/2016.
  */
 public class TweetListFragment extends Fragment {
+   protected SwipeRefreshLayout mSwipeContainer;
    protected TwitterClient mClient;
    protected List<Tweet> mTweets;
+   protected TweetArrayAdapter mAdapter;
+   protected ListView mListView;
+   /*
    protected TweetRecyclerViewAdapter mAdapter;
-   protected SwipeRefreshLayout mSwipeContainer;
    protected RecyclerView mListView;
    protected LinearLayoutManager mLayoutManager;
+   */
    protected FloatingActionButton mFABCompose;
 
    // creation lifecycle event
@@ -35,8 +41,6 @@ public class TweetListFragment extends Fragment {
       mTweets = new ArrayList<>();
       // get the singleton client
       mClient = TwitterApplication.getRestClient();
-      // construct an adapter from the data source
-      mAdapter = new TweetRecyclerViewAdapter(getActivity(), mTweets);
    }
 
    // inflation logic
@@ -46,9 +50,28 @@ public class TweetListFragment extends Fragment {
       View view = inflater.inflate(R.layout.fragment_tweet_list, container, false);
       // set up SwipeRefreshLayout
       mSwipeContainer = (SwipeRefreshLayout)view.findViewById(R.id.swipe_refresh);
+      // set up Floating Action Button
+      mFABCompose = (FloatingActionButton)view.findViewById(R.id.fab_compose);
+
+      // set up ListView
+      mListView = (ListView)view.findViewById(R.id.tweet_list);
+      // construct an adapter from the data source
+      mAdapter = new TweetArrayAdapter(getActivity(), mTweets);
+      // connect the adapter to the ListView
+      mListView.setAdapter(mAdapter);
+      mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+         @Override
+         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            Tweet tweet = mTweets.get(position);
+            DetailFragment detailFragment = DetailFragment.newInstance(tweet);
+            detailFragment.show(getFragmentManager(), "DETAIL_FRAGMENT");
+         }
+      });
+      /*
       // set up RecyclerView
       mListView = (RecyclerView)view.findViewById(R.id.tweet_list);
-      mFABCompose = (FloatingActionButton)view.findViewById(R.id.fab_compose);
+      // construct an adapter from the data source
+      mAdapter = new TweetRecyclerViewAdapter(getActivity(), mTweets);
       // connect the adapter to the ListView
       mListView.setAdapter(mAdapter);
       // set up layout manager to position the items
@@ -58,6 +81,7 @@ public class TweetListFragment extends Fragment {
       RecyclerView.ItemDecoration itemDecoration = new DividerItemDecoration(getActivity(),
             DividerItemDecoration.VERTICAL_LIST);
       mListView.addItemDecoration(itemDecoration);
+      */
       return view;
    }
 }
