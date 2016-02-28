@@ -94,7 +94,6 @@ public class DetailFragment extends DialogFragment implements ReplyFragment.Repl
          e.printStackTrace();
       }
       dateTime.setText(DateFormat.getInstance().format(date));
-      Log.d("NGUYEN", "retweet count: " + tweet.retweetCount + ", favorite count: " + tweet.favoriteCount);
       if (tweet.retweetCount == 0 && tweet.favoriteCount == 0)
          separator.setVisibility(View.INVISIBLE);
       else {

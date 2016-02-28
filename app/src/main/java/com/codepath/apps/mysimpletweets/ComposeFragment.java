@@ -77,10 +77,10 @@ public class ComposeFragment extends DialogFragment {
       final TwitterClient client = TwitterApplication.getRestClient();
       // populate data into the subviews
       profileImage.setImageResource(android.R.color.transparent);
-      client.getUserCredentials(new JsonHttpResponseHandler() {
+      client.getAuthenticatingUserInfo(new JsonHttpResponseHandler() {
          @Override
          public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-            // since TwitterClient.getUserCredentials() is asynchronous, mCurrentUser contains value
+            // since TwitterClient.getAuthenticatingUserInfo() is asynchronous, mCurrentUser contains value
             // only having been inside onSuccess()
             mCurrentUser = User.fromJSONObject(response);
             Glide.with(getContext()).load(mCurrentUser.profileImageUrl).into(profileImage);

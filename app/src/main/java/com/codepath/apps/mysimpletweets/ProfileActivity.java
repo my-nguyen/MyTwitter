@@ -1,8 +1,11 @@
 package com.codepath.apps.mysimpletweets;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -16,28 +19,43 @@ import org.json.JSONObject;
  * Created by My on 2/25/2016.
  */
 public class ProfileActivity extends AppCompatActivity {
-   User user;
+   public static Intent newIntent(Context context, String screenName) {
+      Intent intent = new Intent(context, ProfileActivity.class);
+      intent.putExtra("SCREEN_NAME", screenName);
+      return intent;
+   }
 
    @Override
    protected void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
       setContentView(R.layout.activity_profile);
-      TwitterClient client = TwitterApplication.getRestClient();
-      client.getUserCredentials(new JsonHttpResponseHandler() {
-         @Override
-         public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-            user = User.fromJSONObject(response);
-            getSupportActionBar().setTitle("@" + user.screenName);
-            populateProfileHeader(user);
-         }
-      });
 
       // get the screen name passed in from the activity that launches this (TimelineActivity)
       String screenName = getIntent().getStringExtra("SCREEN_NAME");
+      Log.d("NGUYEN", "ProfileActivity screenName: " + screenName);
+      TwitterClient client = TwitterApplication.getRestClient();
+      if (screenName == null)
+         client.getAuthenticatingUserInfo(new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+               User user = User.fromJSONObject(response);
+               getSupportActionBar().setTitle("@" + user.screenName);
+               populateProfileHeader(user);
+            }
+         });
+      else
+         client.getUserInfo(screenName, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+               User user = User.fromJSONObject(response);
+               getSupportActionBar().setTitle("@" + user.screenName);
+               populateProfileHeader(user);
+            }
+         });
+
+      // load the UserTimelineFragment dynamically (as opposed to loading from XML)
       if (savedInstanceState == null) {
-         // create the user timeline fragment
          UserTimelineFragment fragment = UserTimelineFragment.newInstance(screenName);
-         // display user fragment within this activity dynamically
          FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
          ft.replace(R.id.frame_container, fragment);
          ft.commit();

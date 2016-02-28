@@ -34,10 +34,9 @@ public class UserTimelineFragment extends TweetListFragment {
       mClient.getUserTimeline(screenName, new JsonHttpResponseHandler() {
          @Override
          public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-            Log.d("NGUYEN", response.toString());
             // create tweet objects (and save them to local database) from JSON feed from twitter.com
             List<Tweet> tweets = Tweet.fromJSONArray(response);
-            Log.d("NGUYEN", "fetched " + tweets.size() + " tweets from twitter.com");
+            Log.d("NGUYEN", "getUserTimeline() fetched " + tweets.size() + " tweets from twitter.com");
             // with a load-more feed (endless scroll), just add the feed to the current list of feed
             mAdapter.addAll(tweets);
             /*

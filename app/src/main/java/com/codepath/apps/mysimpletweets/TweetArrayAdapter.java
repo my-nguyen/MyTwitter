@@ -1,6 +1,8 @@
 package com.codepath.apps.mysimpletweets;
 
 import android.content.Context;
+import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,7 +10,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -52,20 +54,36 @@ public class TweetArrayAdapter extends ArrayAdapter<Tweet> {
    @Override
    public View getView(int position, View convertView, ViewGroup parent) {
       // get the tweet
-      Tweet tweet = getItem(position);
-      ViewHolder holder;
+      final Tweet tweet = getItem(position);
+      final ViewHolder holder;
+      // per Nathan's instruction, use setTag() to store username, although that username turns out
+      // to be incorrect; the correct username is from tweet.user.screenName without having to be
+      // stored and retrieved from setTag() and getTag()
+      final String username;
       // find or inflate the template
       if (convertView == null) {
          convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_tweet, parent, false);
          holder = new ViewHolder(convertView);
          convertView.setTag(holder);
+         username = tweet.user.screenName;
+         holder.profileImage.setTag(username);
       }
-      else
-         holder = (ViewHolder)convertView.getTag();
+      else {
+         holder = (ViewHolder) convertView.getTag();
+         username = (String) holder.profileImage.getTag();
+      }
       // populate data into the subviews
       // clear out the old image for a recycled view
       holder.profileImage.setImageResource(android.R.color.transparent);
-      Glide.with(getContext()).load(tweet.user.profileImageUrl).into(holder.profileImage);
+      Picasso.with(getContext()).load(tweet.user.profileImageUrl).into(holder.profileImage);
+      holder.profileImage.setOnClickListener(new View.OnClickListener() {
+         @Override
+         public void onClick(View v) {
+            Log.d("NGUYEN", "tag username: " + username + ", tweet username: " + tweet.user.screenName);
+            Intent intent = ProfileActivity.newIntent(getContext(), tweet.user.screenName);
+            getContext().startActivity(intent);
+         }
+      });
       holder.name.setText(tweet.user.name);
       holder.screenName.setText("@" + tweet.user.screenName);
       holder.timeAgo.setText(Utils.abbreviate(Utils.getRelativeTimeAgo(tweet.createdAt)));

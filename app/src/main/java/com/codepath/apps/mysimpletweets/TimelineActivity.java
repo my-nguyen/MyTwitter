@@ -72,7 +72,7 @@ public class TimelineActivity extends AppCompatActivity implements ComposeFragme
    public boolean onOptionsItemSelected(MenuItem item) {
       switch (item.getItemId()) {
          case R.id.profile:
-            Intent intent = new Intent(this, ProfileActivity.class);
+            Intent intent = ProfileActivity.newIntent(this, null);
             startActivity(intent);
             return true;
          default:

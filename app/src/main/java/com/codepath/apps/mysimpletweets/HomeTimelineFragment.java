@@ -100,7 +100,6 @@ public class HomeTimelineFragment extends TweetListFragment {
          mClient.getHomeTimeline(lowestId, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-               Log.d("NGUYEN", response.toString());
                // clear adapter and database on a fresh new feed of tweets
                if (lowestId == 0) {
                   Tweet.deleteAll();
@@ -108,7 +107,7 @@ public class HomeTimelineFragment extends TweetListFragment {
                }
                // create tweet objects (and save them to local database) from JSON feed from twitter.com
                List<Tweet> tweets = Tweet.fromJSONArray(response);
-               Log.d("NGUYEN", "fetched " + tweets.size() + " tweets from twitter.com");
+               Log.d("NGUYEN", "getHomeTimeline() fetched " + tweets.size() + " tweets from twitter.com");
                // with a load-more feed (endless scroll), just add the feed to the current list of feed
                mTweets.addAll(tweets);
                // signal swipe refresh has finished
@@ -117,64 +116,6 @@ public class HomeTimelineFragment extends TweetListFragment {
          });
       }
    }
-
-   /*
-   // populateTimeline for TweetRecyclerViewAdapter: data must be added or removed thru the data
-   // source (and not the adapter), while a pre-change count is tracked so that notifyItemRangeRemoved()
-   // or notifyItemRangeRemoved() can be called post-change
-   protected void populateTimeline(final long lowestId) {
-      if (!isNetworkAvailable() || !isOnline()) {
-         Log.d("NGUYEN", "THERE IS NO NETWORK CONNECTION.");
-         int count = mAdapter.getItemCount();
-         if (count > 0) {
-            mTweets.clear();
-            mAdapter.notifyItemRangeRemoved(0, count);
-         }
-         // load tweet feed from local database instead of from twitter.com
-         List<Tweet> tweets = Tweet.getAll();
-         Log.d("NGUYEN", "fetched " + tweets.size() + " tweets from the database");
-         count = mAdapter.getItemCount();
-         mTweets.addAll(tweets);
-         mAdapter.notifyItemRangeInserted(count, tweets.size());
-         // signal swipe refresh has finished
-         mSwipeContainer.setRefreshing(false);
-      }
-      else {
-         // retrieve a feed of 25 tweets for the home timeline from twitter.com
-         mClient.getHomeTimeline(lowestId, new JsonHttpResponseHandler() {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-               Log.d("NGUYEN", response.toString());
-               // clear adapter and database on a fresh new feed of tweets
-               int count;
-               if (lowestId == 0) {
-                  Tweet.deleteAll();
-                  count = mAdapter.getItemCount();
-                  if (count > 0) {
-                     mTweets.clear();
-                     mAdapter.notifyItemRangeRemoved(0, count);
-                  }
-               }
-               // create tweet objects (and save them to local database) from JSON feed from twitter.com
-               List<Tweet> tweets = Tweet.fromJSONArray(response);
-               Log.d("NGUYEN", "fetched " + tweets.size() + " tweets from twitter.com");
-               // with a load-more feed (endless scroll), just add the feed to the current list of feed
-               count = mAdapter.getItemCount();
-               mTweets.addAll(tweets);
-               mAdapter.notifyItemRangeInserted(count, tweets.size());
-               // signal swipe refresh has finished
-               mSwipeContainer.setRefreshing(false);
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-               if (errorResponse != null)
-                  Log.d("NGUYEN", errorResponse.toString());
-            }
-         });
-      }
-   }
-   */
 
    // this method finds the new lowest id, for subsequent fetches beyond the current 25 tweets
    private long findLowestId() {
