@@ -79,7 +79,6 @@ public class TweetArrayAdapter extends ArrayAdapter<Tweet> {
       holder.profileImage.setOnClickListener(new View.OnClickListener() {
          @Override
          public void onClick(View v) {
-            Log.d("NGUYEN", "tag username: " + username + ", tweet username: " + tweet.user.screenName);
             Intent intent = ProfileActivity.newIntent(getContext(), tweet.user.screenName);
             getContext().startActivity(intent);
          }

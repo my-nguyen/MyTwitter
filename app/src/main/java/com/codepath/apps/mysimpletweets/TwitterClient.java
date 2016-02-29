@@ -4,6 +4,7 @@ import org.scribe.builder.api.Api;
 import org.scribe.builder.api.TwitterApi;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.codepath.oauth.OAuthBaseClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
@@ -85,8 +86,15 @@ public class TwitterClient extends OAuthBaseClient {
       getClient().get(apiUrl, params, handler);
    }
 
-   public void getUserInfo(String screenName, AsyncHttpResponseHandler handler) {
+   public void getAnyUserInfo(String screenName, AsyncHttpResponseHandler handler) {
       String apiUrl = getApiUrl("users/show.json");
+      RequestParams params = new RequestParams();
+      params.put("screen_name", screenName);
+      getClient().get(apiUrl, params, handler);
+   }
+
+   public void getFriendList(String screenName, AsyncHttpResponseHandler handler) {
+      String apiUrl = getApiUrl("friends/list.json");
       RequestParams params = new RequestParams();
       params.put("screen_name", screenName);
       getClient().get(apiUrl, params, handler);

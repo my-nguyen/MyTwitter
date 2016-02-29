@@ -1,15 +1,19 @@
 package com.codepath.apps.mysimpletweets;
 
+import android.util.Log;
+
 import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
 import com.activeandroid.query.Delete;
 import com.activeandroid.query.Select;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.parceler.Parcel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -92,5 +96,24 @@ public class User extends Model {
          e.printStackTrace();
       }
       return user;
+   }
+
+   public static List<User> fromJSONArray(JSONArray jsonArray) {
+      List<User> users = new ArrayList<>();
+      for (int i = 0; i < jsonArray.length(); i++) {
+         try {
+            JSONObject jsonObject = jsonArray.getJSONObject(i);
+            User user = fromJSONObject(jsonObject);
+            if (user != null) {
+               users.add(user);
+            }
+         } catch (JSONException e) {
+            e.printStackTrace();
+            // keep deserializing the next JSONObject in the JSONArray even if the deserialization
+            // of the current JSONObject fails
+            continue;
+         }
+      }
+      return users;
    }
 }

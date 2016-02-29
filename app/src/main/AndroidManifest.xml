@@ -57,6 +57,9 @@
         <activity
             android:name=".ProfileActivity"
             android:label="Profile"/>
+        <activity
+            android:name=".FollowActivity"
+            android:label="Follow"/>
     </application>
 
 </manifest>

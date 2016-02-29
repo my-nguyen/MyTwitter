@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -32,7 +33,6 @@ public class ProfileActivity extends AppCompatActivity {
 
       // get the screen name passed in from the activity that launches this (TimelineActivity)
       String screenName = getIntent().getStringExtra("SCREEN_NAME");
-      Log.d("NGUYEN", "ProfileActivity screenName: " + screenName);
       TwitterClient client = TwitterApplication.getRestClient();
       if (screenName == null)
          client.getAuthenticatingUserInfo(new JsonHttpResponseHandler() {
@@ -44,7 +44,7 @@ public class ProfileActivity extends AppCompatActivity {
             }
          });
       else
-         client.getUserInfo(screenName, new JsonHttpResponseHandler() {
+         client.getAnyUserInfo(screenName, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                User user = User.fromJSONObject(response);
@@ -62,16 +62,23 @@ public class ProfileActivity extends AppCompatActivity {
       }
    }
 
-   private void populateProfileHeader(User user) {
+   private void populateProfileHeader(final User user) {
+      ImageView profileImage = (ImageView)findViewById(R.id.profile_image);
       TextView name = (TextView)findViewById(R.id.name);
       TextView tagLine = (TextView)findViewById(R.id.tag_line);
-      TextView followers = (TextView)findViewById(R.id.followers);
       TextView following = (TextView)findViewById(R.id.following);
-      ImageView profileImage = (ImageView)findViewById(R.id.profile_image);
+      TextView followers = (TextView)findViewById(R.id.followers);
+      Glide.with(this).load(user.profileImageUrl).into(profileImage);
       name.setText(user.name);
       tagLine.setText(user.description);
-      followers.setText(user.followersCount + " Followers");
       following.setText(user.friendsCount + " Following");
-      Glide.with(this).load(user.profileImageUrl).into(profileImage);
+      following.setOnClickListener(new View.OnClickListener() {
+         @Override
+         public void onClick(View v) {
+            Intent intent = FollowActivity.newIntent(ProfileActivity.this, user.screenName);
+            startActivity(intent);
+         }
+      });
+      followers.setText(user.followersCount + " Followers");
    }
 }
