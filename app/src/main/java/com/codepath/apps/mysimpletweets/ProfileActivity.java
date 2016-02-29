@@ -64,12 +64,12 @@ public class ProfileActivity extends AppCompatActivity {
    private void populateProfileHeader(final User user) {
       ImageView profileImage = (ImageView)findViewById(R.id.profile_image);
       TextView name = (TextView)findViewById(R.id.name);
-      TextView tagLine = (TextView)findViewById(R.id.tag_line);
+      TextView description = (TextView)findViewById(R.id.description);
       TextView following = (TextView)findViewById(R.id.following);
       TextView followers = (TextView)findViewById(R.id.followers);
       Glide.with(this).load(user.profileImageUrl).into(profileImage);
       name.setText(user.name);
-      tagLine.setText(user.description);
+      description.setText(user.description);
       following.setText(user.friendsCount + " Following");
       following.setOnClickListener(new View.OnClickListener() {
          @Override
