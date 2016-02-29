@@ -23,14 +23,15 @@ public class TweetListFragment extends Fragment {
    protected SwipeRefreshLayout mSwipeContainer;
    protected TwitterClient mClient;
    protected List<Tweet> mTweets;
-   /*
+   protected FloatingActionButton mFABCompose;
+
    protected TweetArrayAdapter mAdapter;
    protected ListView mListView;
-   */
+   /*
    protected TweetRecyclerViewAdapter mAdapter;
    protected RecyclerView mListView;
    protected LinearLayoutManager mLayoutManager;
-   protected FloatingActionButton mFABCompose;
+   */
 
    // creation lifecycle event
    @Override
@@ -53,7 +54,6 @@ public class TweetListFragment extends Fragment {
       // set up Floating Action Button
       mFABCompose = (FloatingActionButton)view.findViewById(R.id.fab_compose);
 
-      /*
       // set up ListView
       mListView = (ListView)view.findViewById(R.id.tweet_list);
       // construct an adapter from the data source
@@ -68,7 +68,7 @@ public class TweetListFragment extends Fragment {
             detailFragment.show(getFragmentManager(), "DETAIL_FRAGMENT");
          }
       });
-      */
+      /*
       // set up RecyclerView
       mListView = (RecyclerView)view.findViewById(R.id.tweet_list);
       // construct an adapter from the data source
@@ -82,6 +82,7 @@ public class TweetListFragment extends Fragment {
       RecyclerView.ItemDecoration itemDecoration = new DividerItemDecoration(getActivity(),
             DividerItemDecoration.VERTICAL_LIST);
       mListView.addItemDecoration(itemDecoration);
+      */
       return view;
    }
 }

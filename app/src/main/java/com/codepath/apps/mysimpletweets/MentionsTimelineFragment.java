@@ -29,10 +29,12 @@ public class MentionsTimelineFragment extends TweetListFragment {
             List<Tweet> tweets = Tweet.fromJSONArray(response);
             Log.d("NGUYEN", "getMentionsTimeline() fetched " + tweets.size() + " tweets from twitter.com");
             // with a load-more feed (endless scroll), just add the feed to the current list of feed
-            // mAdapter.addAll(tweets);
+            mAdapter.addAll(tweets);
+            /*
             int count = mAdapter.getItemCount();
             mTweets.addAll(tweets);
             mAdapter.notifyItemRangeInserted(count, tweets.size());
+            */
          }
       });
    }

@@ -49,7 +49,6 @@ public class HomeTimelineFragment extends TweetListFragment {
             android.R.color.holo_green_light,
             android.R.color.holo_orange_light,
             android.R.color.holo_red_light);
-      /*
       // set up onScrollListener for ListView
       mListView.setOnScrollListener(new ListViewScrollListener() {
          @Override
@@ -61,7 +60,7 @@ public class HomeTimelineFragment extends TweetListFragment {
             return true;
          }
       });
-      */
+      /*
       // set up onScrollListener for RecyclerView
       mListView.addOnScrollListener(new RecyclerViewScrollListener(mLayoutManager) {
          @Override
@@ -71,6 +70,7 @@ public class HomeTimelineFragment extends TweetListFragment {
             populateTimeline(findLowestId());
          }
       });
+      */
       mFABCompose.setOnClickListener(new View.OnClickListener() {
          @Override
          public void onClick(View v) {
@@ -87,19 +87,23 @@ public class HomeTimelineFragment extends TweetListFragment {
    protected void populateTimeline(final long lowestId) {
       if (!isNetworkAvailable() || !isOnline()) {
          Log.d("NGUYEN", "NO NETWORK CONNECTION.");
-         // mAdapter.clear();
+         mAdapter.clear();
+         /*
          int count = mAdapter.getItemCount();
          if (count > 0) {
             mTweets.clear();
             mAdapter.notifyItemRangeRemoved(0, count);
          }
+         */
          // load tweet feed from local database instead of from twitter.com
          List<Tweet> tweets = Tweet.getAll();
          Log.d("NGUYEN", "fetched " + tweets.size() + " tweets from the database");
-         // mAdapter.addAll(tweets);
+         mAdapter.addAll(tweets);
+         /*
          count = mAdapter.getItemCount();
          mTweets.addAll(tweets);
          mAdapter.notifyItemRangeInserted(count, tweets.size());
+         */
          // signal swipe refresh has finished
          mSwipeContainer.setRefreshing(false);
       }
@@ -109,23 +113,30 @@ public class HomeTimelineFragment extends TweetListFragment {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
                // clear adapter and database on a fresh new feed of tweets
+               if (lowestId == 0) {
+                  Tweet.deleteAll();
+                  mAdapter.clear();
+               }
+               /*
                int count = mAdapter.getItemCount();
                if (lowestId == 0) {
                   Tweet.deleteAll();
-                  // mAdapter.clear();
                   if (count > 0) {
                      mTweets.clear();
                      mAdapter.notifyItemRangeRemoved(0, count);
                   }
                }
+               */
                // create tweet objects (and save them to local database) from JSON feed from twitter.com
                List<Tweet> tweets = Tweet.fromJSONArray(response);
                Log.d("NGUYEN", "getHomeTimeline() fetched " + tweets.size() + " tweets from twitter.com");
                // with a load-more feed (endless scroll), just add the feed to the current list of feed
-               // mTweets.addAll(tweets);
+               mTweets.addAll(tweets);
+               /*
                count = mAdapter.getItemCount();
                mTweets.addAll(tweets);
                mAdapter.notifyItemRangeInserted(count, tweets.size());
+               */
                // signal swipe refresh has finished
                mSwipeContainer.setRefreshing(false);
             }
@@ -162,8 +173,10 @@ public class HomeTimelineFragment extends TweetListFragment {
 
    public void addNewTweet(Tweet tweet) {
       // add the Tweet at the very first position in the adapter
-      // mAdapter.insert(tweet, 0);
+      mAdapter.insert(tweet, 0);
+      /*
       mTweets.add(0, tweet);
       mAdapter.notifyItemInserted(0);
+      */
    }
 }
