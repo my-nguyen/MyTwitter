@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -75,10 +74,17 @@ public class ProfileActivity extends AppCompatActivity {
       following.setOnClickListener(new View.OnClickListener() {
          @Override
          public void onClick(View v) {
-            Intent intent = FollowActivity.newIntent(ProfileActivity.this, user.screenName);
+            Intent intent = FollowingActivity.newIntent(ProfileActivity.this, user.screenName);
             startActivity(intent);
          }
       });
       followers.setText(user.followersCount + " Followers");
+      followers.setOnClickListener(new View.OnClickListener() {
+         @Override
+         public void onClick(View v) {
+            Intent intent = FollowerActivity.newIntent(ProfileActivity.this, user.screenName);
+            startActivity(intent);
+         }
+      });
    }
 }

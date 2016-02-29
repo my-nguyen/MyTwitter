@@ -19,7 +19,7 @@
         android:layout_toRightOf="@id/profile_image"
         android:text="Name"
         android:textStyle="bold"
-        android:textSize="16sp"/>
+        android:textSize="15sp"/>
     <TextView
         android:id="@+id/screen_name"
         android:layout_width="wrap_content"
