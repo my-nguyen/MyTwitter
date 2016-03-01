@@ -93,6 +93,7 @@ abstract public class TweetListFragment extends Fragment {
          public boolean onLoadMore(int page, int totalItemsCount) {
             // triggered only when new data needs to be appended to the list, in this case when
             // lowestId is not 0.
+            Log.d("NGUYEN", "onLoadMore()");
             fillTimeline(findLowestId(mTweets));
             // true only if more data is actually being loaded; false otherwise
             return true;
@@ -118,7 +119,7 @@ abstract public class TweetListFragment extends Fragment {
 
    abstract protected String timelineId();
 
-   protected void fillTimeline(long maxId) {
+   private void fillTimeline(long maxId) {
       if (!isNetworkAvailable() || !isOnline())
          loadFromDatabase();
       else
@@ -129,7 +130,10 @@ abstract public class TweetListFragment extends Fragment {
       // clear adapter and database on a fresh new feed of tweets
       if (maxId == 0) {
          Tweet.deleteAll(timelineId());
-         mAdapter.clear();
+         for (Tweet tweet : mTweets)
+            if (tweet.timeline.equals(timelineId()))
+               mTweets.remove(tweet);
+         mAdapter.notifyDataSetChanged();
       }
       /*
       int count = mAdapter.getItemCount();
@@ -143,9 +147,10 @@ abstract public class TweetListFragment extends Fragment {
       */
       // create tweet objects (and save them to local database) from JSON feed from twitter.com
       List<Tweet> tweets = Tweet.fromJSONArray(response, timelineId());
-      Log.d("NGUYEN", "getHomeTimeline() fetched " + tweets.size() + " tweets from twitter.com");
+      Log.d("NGUYEN", "fetched " + tweets.size() + " tweets from twitter.com");
       // with a load-more feed (endless scroll), just add the feed to the current list of feed
       mTweets.addAll(tweets);
+      mAdapter.notifyDataSetChanged();
       /*
       count = mAdapter.getItemCount();
       mTweets.addAll(tweets);
@@ -179,10 +184,10 @@ abstract public class TweetListFragment extends Fragment {
    }
 
    // this method finds the new lowest id, for subsequent fetches beyond the current 25 tweets
-   protected long findLowestId(List<Tweet> tweets) {
+   private long findLowestId(List<Tweet> tweets) {
       long lowest = tweets.get(0).id;
       for (int i = 1; i < tweets.size(); i++)
-         if (lowest > tweets.get(i).id)
+         if (lowest > tweets.get(i).id && tweets.get(i).timeline.equals(timelineId()))
             lowest = tweets.get(i).id;
       return lowest;
    }

@@ -4,12 +4,14 @@ import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ProgressBar;
 
 import com.astuetz.PagerSlidingTabStrip;
 
@@ -78,6 +80,17 @@ public class TimelineActivity extends AppCompatActivity implements ComposeFragme
          default:
             return super.onOptionsItemSelected(item);
       }
+   }
+
+   MenuItem mProgressAction;
+   @Override
+   public boolean onPrepareOptionsMenu(Menu menu) {
+      // store instance of the menu item containing progress
+      mProgressAction = menu.findItem(R.id.progress);
+      // extract the action-view from the menu item
+      ProgressBar bar = (ProgressBar) MenuItemCompat.getActionView(mProgressAction);
+      // return to finish
+      return super.onPrepareOptionsMenu(menu);
    }
 
    @Override
