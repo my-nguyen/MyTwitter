@@ -2,11 +2,12 @@ package com.codepath.apps.mysimpletweets;
 
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
+import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -33,6 +34,8 @@ public class TweetArrayAdapter extends ArrayAdapter<Tweet> {
       TextView timeAgo;
       @Bind(R.id.text)
       LinkifiedTextView text;
+      @Bind(R.id.reply)
+      ImageButton reply;
       /*
       @Bind(R.id.retweet_count)
       TextView retweetCount;
@@ -87,6 +90,13 @@ public class TweetArrayAdapter extends ArrayAdapter<Tweet> {
       holder.screenName.setText("@" + tweet.user.screenName);
       holder.timeAgo.setText(Utils.abbreviate(Utils.getRelativeTimeAgo(tweet.createdAt)));
       holder.text.setText(tweet.text);
+      holder.reply.setOnClickListener(new View.OnClickListener() {
+         @Override
+         public void onClick(View v) {
+            ReplyFragment replyFragment = ReplyFragment.newInstance(tweet);
+            replyFragment.show(((FragmentActivity)getContext()).getSupportFragmentManager(), "REPLY_FRAGMENT");
+         }
+      });
       /*
       if (tweet.retweetCount > 0)
          holder.retweetCount.setText(Integer.toString(tweet.retweetCount));

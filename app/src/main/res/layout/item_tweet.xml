@@ -48,57 +48,55 @@
         android:autoLink="all"
         android:linksClickable="true"
         />
-    <!-- disable these views for now
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="30dp"
+        android:layout_height="20dp"
         android:layout_below="@id/text"
-        android:layout_alignLeft="@id/text"
-        >
+        android:layout_alignLeft="@id/text">
         <ImageButton
             android:id="@+id/reply"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:src="@drawable/ic_reply"
-            android:background="@android:color/transparent"
-            />
-        <ImageButton
-            android:id="@+id/retweet"
-            android:layout_toRightOf="@id/reply"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="50dp"
-            android:src="@drawable/ic_retweet"
-            android:background="@android:color/transparent"
-            />
-        <TextView
-            android:id="@+id/retweet_count"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/retweet"
-            android:layout_alignTop="@id/retweet"
-            android:layout_alignBottom="@id/retweet"
-            android:gravity="center"
-            />
-        <ImageButton
-            android:id="@+id/favorite"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/retweet_count"
-            android:layout_marginLeft="50dp"
-            android:src="@drawable/ic_favorite"
-            android:background="@android:color/transparent"
-            />
-        <TextView
-            android:id="@+id/favorite_count"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/favorite"
-            android:layout_alignTop="@id/favorite"
-            android:layout_alignBottom="@id/favorite"
-            android:gravity="center"
-            />
-    </RelativeLayout>
-    -->
+            android:background="@android:color/transparent"/>
+        <!-- disable these views for now
+            <ImageButton
+                android:id="@+id/retweet"
+                android:layout_toRightOf="@id/reply"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="50dp"
+                android:src="@drawable/ic_retweet"
+                android:background="@android:color/transparent"
+                />
+            <TextView
+                android:id="@+id/retweet_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/retweet"
+                android:layout_alignTop="@id/retweet"
+                android:layout_alignBottom="@id/retweet"
+                android:gravity="center"
+                />
+            <ImageButton
+                android:id="@+id/favorite"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/retweet_count"
+                android:layout_marginLeft="50dp"
+                android:src="@drawable/ic_favorite"
+                android:background="@android:color/transparent"
+                />
+            <TextView
+                android:id="@+id/favorite_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/favorite"
+                android:layout_alignTop="@id/favorite"
+                android:layout_alignBottom="@id/favorite"
+                android:gravity="center"
+                />
+        -->
+        </RelativeLayout>
 </RelativeLayout>
