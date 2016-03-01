@@ -35,6 +35,10 @@ public class Tweet extends Model {
    public String displayUrl;
    @Column(name = "media_url")
    public String mediaUrl;
+   @Column(name = "retweeted")
+   public boolean retweeted;
+   @Column(name = "favorited")
+   public boolean favorited;
    @Column(name = "timeline")
    public String timeline;
    @Column(name = "user", onUpdate = Column.ForeignKeyAction.CASCADE, onDelete = Column.ForeignKeyAction.CASCADE)
@@ -51,6 +55,7 @@ public class Tweet extends Model {
       builder.append("<").append(text).append("> <").append(id).append("> <").append(createdAt)
             .append("> <").append(retweetCount).append("> <").append(favoriteCount)
             .append("> <").append(displayUrl).append("> <").append(mediaUrl)
+            .append("> <").append(retweeted).append("> <").append(favorited)
             .append("> <").append(timeline).append(">\n").append(user);
       return builder.toString();
    }
@@ -103,6 +108,8 @@ public class Tweet extends Model {
             // "RT @FOXSports: 'Boy in plastic bag' Messi jersey receives real, signed version. foxs.pt/1TB5y05 (Pic: @UNICEFargentina) https://t.c…"
             tweet.text = text;
          }
+         tweet.retweeted = jsonObject.getBoolean("retweeted");
+         tweet.favorited = jsonObject.getBoolean("favorited");
          tweet.timeline = timeline;
          tweet.user = User.findOrCreateFromJSONObject(jsonObject.getJSONObject("user"));
          tweet.save();

@@ -1,6 +1,9 @@
 package com.codepath.apps.mysimpletweets;
 
+import android.content.res.ColorStateList;
 import android.graphics.Color;
+import android.graphics.ColorFilter;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
@@ -60,6 +63,8 @@ public class DetailFragment extends DialogFragment implements ReplyFragment.Repl
    ImageButton reply;
    @Bind(R.id.retweet)
    ImageButton retweet;
+   @Bind(R.id.favorite)
+   ImageButton favorite;
 
    // empty constructor required by DialogFragment
    public DetailFragment() {
@@ -85,7 +90,7 @@ public class DetailFragment extends DialogFragment implements ReplyFragment.Repl
    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
       super.onViewCreated(view, savedInstanceState);
       // extract Tweet and User objects from bundle
-      final Tweet tweet = (Tweet)Parcels.unwrap(getArguments().getParcelable("TWEET"));
+      final Tweet tweet = (Tweet) Parcels.unwrap(getArguments().getParcelable("TWEET"));
       // set up the TitleBar
       getDialog().setTitle("Tweet");
       // set up the title divider
@@ -133,19 +138,55 @@ public class DetailFragment extends DialogFragment implements ReplyFragment.Repl
          }
       });
       // set up the retweet button
+      final ColorFilter retweetColor = favorite.getColorFilter();
+      if (tweet.retweeted)
+         retweet.setColorFilter(Color.RED);
       retweet.setOnClickListener(new View.OnClickListener() {
          @Override
          public void onClick(View v) {
-            Log.d("NGUYEN", "DetailFragment.setOnClickListener.onClick");
             TwitterClient client = TwitterApplication.getRestClient();
-            client.postStatusRetweet(tweet.id, new JsonHttpResponseHandler() {
-               @Override
-               public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                  Utils.myLog(response.toString());
-                  // retweetCount.setText("" + (tweet.retweetCount + 1));
-                  // retweet.setColorFilter(Color.GREEN);
-               }
-            });
+            if (tweet.retweeted)
+               client.postStatusUnretweet(tweet.id, new JsonHttpResponseHandler() {
+                  @Override
+                  public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                     retweetCount.setText("" + (tweet.retweetCount - 1));
+                     retweet.setColorFilter(Color.BLACK);
+                  }
+               });
+            else
+               client.postStatusRetweet(tweet.id, new JsonHttpResponseHandler() {
+                  @Override
+                  public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                     retweetCount.setText("" + (tweet.retweetCount + 1));
+                     retweet.setColorFilter(Color.GREEN);
+                  }
+               });
+         }
+      });
+      // set up the favorite button
+      final ColorFilter favoriteColor = favorite.getColorFilter();
+      if (tweet.favorited)
+         favorite.setColorFilter(Color.RED);
+      favorite.setOnClickListener(new View.OnClickListener() {
+         @Override
+         public void onClick(View v) {
+            TwitterClient client = TwitterApplication.getRestClient();
+            if (tweet.favorited)
+               client.postFavoriteDestroy(tweet.id, new JsonHttpResponseHandler() {
+                  @Override
+                  public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                     favoriteCount.setText("" + (tweet.favoriteCount - 1));
+                     favorite.setColorFilter(Color.BLACK);
+                  }
+               });
+            else
+               client.postFavoriteCreate(tweet.id, new JsonHttpResponseHandler() {
+                  @Override
+                  public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                     favoriteCount.setText("" + (tweet.favoriteCount + 1));
+                     favorite.setColorFilter(Color.RED);
+                  }
+               });
          }
       });
    }
