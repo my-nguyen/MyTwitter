@@ -66,6 +66,28 @@ abstract public class TweetListFragment extends Fragment {
             DividerItemDecoration.VERTICAL_LIST);
       mListView.addItemDecoration(itemDecoration);
       */
+      // set up onScrollListener for ListView
+      mListView.setOnScrollListener(new ListViewScrollListener() {
+         @Override
+         public boolean onLoadMore(int page, int totalItemsCount) {
+            // triggered only when new data needs to be appended to the list, in this case when
+            // lowestId is not 0.
+            fillTimeline(findLowestId(getTweets()));
+            // true only if more data is actually being loaded; false otherwise
+            return true;
+         }
+      });
+      /*
+      // set up onScrollListener for RecyclerView
+      mListView.addOnScrollListener(new RecyclerViewScrollListener(mLayoutManager) {
+         @Override
+         public void onLoadMore(int page, int totalItemsCount) {
+            // triggered only when new data needs to be appended to the list, in this case when
+            // lowestId is not 0.
+            fillTimeline(findLowestId());
+         }
+      });
+      */
       // populate timeline upon startup
       fillTimeline(0);
       return view;
@@ -74,6 +96,8 @@ abstract public class TweetListFragment extends Fragment {
    abstract protected void populateTimeline(final long maxId);
 
    abstract protected void loadFromDatabase();
+
+   abstract protected List<Tweet> getTweets();
 
    protected void fillTimeline(long maxId) {
       if (!isNetworkAvailable() || !isOnline())

@@ -26,7 +26,11 @@ import java.util.List;
  * Created by My on 2/24/2016.
  */
 public class HomeTimelineFragment extends TweetListFragment {
+   // each of Home, Mentions and User TimelineFragment has its own copy of mTweets, since they are
+   // different list
    private List<Tweet> mTweets;
+   // because the Adapter is tied to the data source (Tweets), these TimelineFragment's also keep
+   // their own private copy of Adapter
    private TweetArrayAdapter mAdapter;
    // private TweetRecyclerViewAdapter mAdapter;
 
@@ -47,28 +51,6 @@ public class HomeTimelineFragment extends TweetListFragment {
 
       // connect the adapter to the ListView
       mListView.setAdapter(mAdapter);
-      // set up onScrollListener for ListView
-      mListView.setOnScrollListener(new ListViewScrollListener() {
-         @Override
-         public boolean onLoadMore(int page, int totalItemsCount) {
-            // triggered only when new data needs to be appended to the list, in this case when
-            // lowestId is not 0.
-            fillTimeline(findLowestId(mTweets));
-            // true only if more data is actually being loaded; false otherwise
-            return true;
-         }
-      });
-      /*
-      // set up onScrollListener for RecyclerView
-      mListView.addOnScrollListener(new RecyclerViewScrollListener(mLayoutManager) {
-         @Override
-         public void onLoadMore(int page, int totalItemsCount) {
-            // triggered only when new data needs to be appended to the list, in this case when
-            // lowestId is not 0.
-            fillTimeline(findLowestId());
-         }
-      });
-      */
       // set up OnItemClickListener
       mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
          @Override
@@ -164,6 +146,11 @@ public class HomeTimelineFragment extends TweetListFragment {
          */
       // signal swipe refresh has finished
       mSwipeContainer.setRefreshing(false);
+   }
+
+   @Override
+   public List<Tweet> getTweets() {
+      return mTweets;
    }
 
    public void addNewTweet(Tweet tweet) {

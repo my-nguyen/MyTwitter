@@ -37,20 +37,8 @@ public class MentionsTimelineFragment extends TweetListFragment {
    @Override
    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
       View view = super.onCreateView(inflater, container, savedInstanceState);
-
       // connect the adapter to the ListView
       mListView.setAdapter(mAdapter);
-      // set up onScrollListener for ListView
-      mListView.setOnScrollListener(new ListViewScrollListener() {
-         @Override
-         public boolean onLoadMore(int page, int totalItemsCount) {
-            // triggered only when new data needs to be appended to the list, in this case when
-            // lowestId is not 0.
-            fillTimeline(findLowestId(mTweets));
-            // true only if more data is actually being loaded; false otherwise
-            return true;
-         }
-      });
       return view;
    }
 
@@ -78,5 +66,10 @@ public class MentionsTimelineFragment extends TweetListFragment {
             mAdapter.addAll(tweets);
          }
       });
+   }
+
+   @Override
+   public List<Tweet> getTweets() {
+      return mTweets;
    }
 }
