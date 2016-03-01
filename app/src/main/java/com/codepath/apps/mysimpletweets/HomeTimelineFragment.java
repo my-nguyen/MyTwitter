@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
 
@@ -18,16 +19,65 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by My on 2/24/2016.
  */
 public class HomeTimelineFragment extends TweetListFragment {
+   private List<Tweet> mTweets;
+   private TweetArrayAdapter mAdapter;
+   // private TweetRecyclerViewAdapter mAdapter;
+
+   @Override
+   public void onCreate(@Nullable Bundle savedInstanceState) {
+      super.onCreate(savedInstanceState);
+      // create an ArrayList data source
+      mTweets = new ArrayList<>();
+      // construct an adapter from the data source
+      mAdapter = new TweetArrayAdapter(getActivity(), mTweets);
+      // mAdapter = new TweetRecyclerViewAdapter(getActivity(), mTweets);
+   }
+
    @Nullable
    @Override
    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
       View view = super.onCreateView(inflater, container, savedInstanceState);
+
+      // connect the adapter to the ListView
+      mListView.setAdapter(mAdapter);
+      // set up onScrollListener for ListView
+      mListView.setOnScrollListener(new ListViewScrollListener() {
+         @Override
+         public boolean onLoadMore(int page, int totalItemsCount) {
+            // triggered only when new data needs to be appended to the list, in this case when
+            // lowestId is not 0.
+            fillTimeline(findLowestId(mTweets));
+            // true only if more data is actually being loaded; false otherwise
+            return true;
+         }
+      });
+      /*
+      // set up onScrollListener for RecyclerView
+      mListView.addOnScrollListener(new RecyclerViewScrollListener(mLayoutManager) {
+         @Override
+         public void onLoadMore(int page, int totalItemsCount) {
+            // triggered only when new data needs to be appended to the list, in this case when
+            // lowestId is not 0.
+            fillTimeline(findLowestId());
+         }
+      });
+      */
+      // set up OnItemClickListener
+      mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+         @Override
+         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            Tweet tweet = mTweets.get(position);
+            DetailFragment detailFragment = DetailFragment.newInstance(tweet);
+            detailFragment.show(getFragmentManager(), "DETAIL_FRAGMENT");
+         }
+      });
       // set up refresh listener
       mSwipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
          @Override
@@ -90,6 +140,30 @@ public class HomeTimelineFragment extends TweetListFragment {
             mSwipeContainer.setRefreshing(false);
          }
       });
+   }
+
+   @Override
+   protected void loadFromDatabase() {
+      Log.d("NGUYEN", "NO NETWORK CONNECTION.");
+      mAdapter.clear();
+         /*
+         int count = mAdapter.getItemCount();
+         if (count > 0) {
+            mTweets.clear();
+            mAdapter.notifyItemRangeRemoved(0, count);
+         }
+         */
+      // load tweet feed from local database instead of from twitter.com
+      List<Tweet> tweets = Tweet.getAll();
+      Log.d("NGUYEN", "fetched " + tweets.size() + " tweets from the database");
+      mAdapter.addAll(tweets);
+         /*
+         count = mAdapter.getItemCount();
+         mTweets.addAll(tweets);
+         mAdapter.notifyItemRangeInserted(count, tweets.size());
+         */
+      // signal swipe refresh has finished
+      mSwipeContainer.setRefreshing(false);
    }
 
    public void addNewTweet(Tweet tweet) {
