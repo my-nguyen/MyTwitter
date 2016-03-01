@@ -24,13 +24,6 @@ import java.util.List;
  * Created by My on 2/24/2016.
  */
 public class HomeTimelineFragment extends TweetListFragment {
-   @Override
-   public void onCreate(@Nullable Bundle savedInstanceState) {
-      super.onCreate(savedInstanceState);
-      // populate timeline upon startup
-      populateTimeline(0);
-   }
-
    @Nullable
    @Override
    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -49,28 +42,6 @@ public class HomeTimelineFragment extends TweetListFragment {
             android.R.color.holo_green_light,
             android.R.color.holo_orange_light,
             android.R.color.holo_red_light);
-      // set up onScrollListener for ListView
-      mListView.setOnScrollListener(new ListViewScrollListener() {
-         @Override
-         public boolean onLoadMore(int page, int totalItemsCount) {
-            // triggered only when new data needs to be appended to the list, in this case when
-            // lowestId is not 0.
-            populateTimeline(findLowestId());
-            // true only if more data is actually being loaded; false otherwise
-            return true;
-         }
-      });
-      /*
-      // set up onScrollListener for RecyclerView
-      mListView.addOnScrollListener(new RecyclerViewScrollListener(mLayoutManager) {
-         @Override
-         public void onLoadMore(int page, int totalItemsCount) {
-            // triggered only when new data needs to be appended to the list, in this case when
-            // lowestId is not 0.
-            populateTimeline(findLowestId());
-         }
-      });
-      */
       mFABCompose.setOnClickListener(new View.OnClickListener() {
          @Override
          public void onClick(View v) {
@@ -81,10 +52,11 @@ public class HomeTimelineFragment extends TweetListFragment {
       return view;
    }
 
-   // if lowestId == 0, fetch a fresh new feed of 25 tweets
-   // if lowestId != 0, fetch the next 25 tweets beyond the current list of tweets in the timeline
+   // if maxId == 0, fetch a fresh new feed of 25 tweets
+   // if maxId != 0, fetch the next 25 tweets beyond the current list of tweets in the timeline
    // populateTimeline() for TweetArrayAdapter; data is added or removed directly from the adapter
-   protected void populateTimeline(final long lowestId) {
+   @Override
+   protected void populateTimeline(final long maxId) {
       if (!isNetworkAvailable() || !isOnline()) {
          Log.d("NGUYEN", "NO NETWORK CONNECTION.");
          mAdapter.clear();
@@ -109,17 +81,17 @@ public class HomeTimelineFragment extends TweetListFragment {
       }
       else {
          // retrieve a feed of 25 tweets for the home timeline from twitter.com
-         mClient.getHomeTimeline(lowestId, new JsonHttpResponseHandler() {
+         mClient.getHomeTimeline(maxId, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
                // clear adapter and database on a fresh new feed of tweets
-               if (lowestId == 0) {
+               if (maxId == 0) {
                   Tweet.deleteAll();
                   mAdapter.clear();
                }
                /*
                int count = mAdapter.getItemCount();
-               if (lowestId == 0) {
+               if (maxId == 0) {
                   Tweet.deleteAll();
                   if (count > 0) {
                      mTweets.clear();
@@ -142,15 +114,6 @@ public class HomeTimelineFragment extends TweetListFragment {
             }
          });
       }
-   }
-
-   // this method finds the new lowest id, for subsequent fetches beyond the current 25 tweets
-   private long findLowestId() {
-      long lowest = mTweets.get(0).id;
-      for (int i = 1; i < mTweets.size(); i++)
-         if (lowest > mTweets.get(i).id)
-            lowest = mTweets.get(i).id;
-      return lowest;
    }
 
    private Boolean isNetworkAvailable() {

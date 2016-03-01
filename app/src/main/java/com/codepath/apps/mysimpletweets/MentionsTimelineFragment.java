@@ -16,13 +16,8 @@ import java.util.List;
  */
 public class MentionsTimelineFragment extends TweetListFragment {
    @Override
-   public void onCreate(@Nullable Bundle savedInstanceState) {
-      super.onCreate(savedInstanceState);
-      populateTimeline();
-   }
-
-   private void populateTimeline() {
-      mClient.getMentionsTimeline(new JsonHttpResponseHandler() {
+   protected void populateTimeline(final long maxId) {
+      mClient.getMentionsTimeline(maxId, new JsonHttpResponseHandler() {
          @Override
          public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
             // create tweet objects (and save them to local database) from JSON feed from twitter.com

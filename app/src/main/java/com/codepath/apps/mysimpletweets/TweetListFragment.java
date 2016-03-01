@@ -19,7 +19,7 @@ import java.util.List;
 /**
  * Created by My on 2/24/2016.
  */
-public class TweetListFragment extends Fragment {
+abstract public class TweetListFragment extends Fragment {
    protected SwipeRefreshLayout mSwipeContainer;
    protected TwitterClient mClient;
    protected List<Tweet> mTweets;
@@ -42,6 +42,8 @@ public class TweetListFragment extends Fragment {
       mTweets = new ArrayList<>();
       // get the singleton client
       mClient = TwitterApplication.getRestClient();
+      // populate timeline upon startup
+      populateTimeline(0);
    }
 
    // inflation logic
@@ -83,6 +85,39 @@ public class TweetListFragment extends Fragment {
             DividerItemDecoration.VERTICAL_LIST);
       mListView.addItemDecoration(itemDecoration);
       */
+      // set up onScrollListener for ListView
+      mListView.setOnScrollListener(new ListViewScrollListener() {
+         @Override
+         public boolean onLoadMore(int page, int totalItemsCount) {
+            // triggered only when new data needs to be appended to the list, in this case when
+            // lowestId is not 0.
+            populateTimeline(findLowestId());
+            // true only if more data is actually being loaded; false otherwise
+            return true;
+         }
+      });
+      /*
+      // set up onScrollListener for RecyclerView
+      mListView.addOnScrollListener(new RecyclerViewScrollListener(mLayoutManager) {
+         @Override
+         public void onLoadMore(int page, int totalItemsCount) {
+            // triggered only when new data needs to be appended to the list, in this case when
+            // lowestId is not 0.
+            populateTimeline(findLowestId());
+         }
+      });
+      */
       return view;
+   }
+
+   abstract protected void populateTimeline(final long maxId);
+
+   // this method finds the new lowest id, for subsequent fetches beyond the current 25 tweets
+   private long findLowestId() {
+      long lowest = mTweets.get(0).id;
+      for (int i = 1; i < mTweets.size(); i++)
+         if (lowest > mTweets.get(i).id)
+            lowest = mTweets.get(i).id;
+      return lowest;
    }
 }
