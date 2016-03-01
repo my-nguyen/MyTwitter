@@ -57,38 +57,15 @@ public class HomeTimelineFragment extends TweetListFragment {
    // populateTimeline() for TweetArrayAdapter; data is added or removed directly from the adapter
    @Override
    protected void populateTimeline(final long maxId) {
-      if (!isNetworkAvailable() || !isOnline()) {
-         Log.d("NGUYEN", "NO NETWORK CONNECTION.");
-         mAdapter.clear();
-         /*
-         int count = mAdapter.getItemCount();
-         if (count > 0) {
-            mTweets.clear();
-            mAdapter.notifyItemRangeRemoved(0, count);
-         }
-         */
-         // load tweet feed from local database instead of from twitter.com
-         List<Tweet> tweets = Tweet.getAll();
-         Log.d("NGUYEN", "fetched " + tweets.size() + " tweets from the database");
-         mAdapter.addAll(tweets);
-         /*
-         count = mAdapter.getItemCount();
-         mTweets.addAll(tweets);
-         mAdapter.notifyItemRangeInserted(count, tweets.size());
-         */
-         // signal swipe refresh has finished
-         mSwipeContainer.setRefreshing(false);
-      }
-      else {
-         // retrieve a feed of 25 tweets for the home timeline from twitter.com
-         mClient.getHomeTimeline(maxId, new JsonHttpResponseHandler() {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-               // clear adapter and database on a fresh new feed of tweets
-               if (maxId == 0) {
-                  Tweet.deleteAll();
-                  mAdapter.clear();
-               }
+      // retrieve a feed of 25 tweets for the home timeline from twitter.com
+      mClient.getHomeTimeline(maxId, new JsonHttpResponseHandler() {
+         @Override
+         public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+            // clear adapter and database on a fresh new feed of tweets
+            if (maxId == 0) {
+               Tweet.deleteAll();
+               mAdapter.clear();
+            }
                /*
                int count = mAdapter.getItemCount();
                if (maxId == 0) {
@@ -99,39 +76,20 @@ public class HomeTimelineFragment extends TweetListFragment {
                   }
                }
                */
-               // create tweet objects (and save them to local database) from JSON feed from twitter.com
-               List<Tweet> tweets = Tweet.fromJSONArray(response);
-               Log.d("NGUYEN", "getHomeTimeline() fetched " + tweets.size() + " tweets from twitter.com");
-               // with a load-more feed (endless scroll), just add the feed to the current list of feed
-               mTweets.addAll(tweets);
+            // create tweet objects (and save them to local database) from JSON feed from twitter.com
+            List<Tweet> tweets = Tweet.fromJSONArray(response);
+            Log.d("NGUYEN", "getHomeTimeline() fetched " + tweets.size() + " tweets from twitter.com");
+            // with a load-more feed (endless scroll), just add the feed to the current list of feed
+            mTweets.addAll(tweets);
                /*
                count = mAdapter.getItemCount();
                mTweets.addAll(tweets);
                mAdapter.notifyItemRangeInserted(count, tweets.size());
                */
-               // signal swipe refresh has finished
-               mSwipeContainer.setRefreshing(false);
-            }
-         });
-      }
-   }
-
-   private Boolean isNetworkAvailable() {
-      ConnectivityManager connectivityManager
-            = (ConnectivityManager)getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
-      NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-      return activeNetworkInfo != null && activeNetworkInfo.isConnectedOrConnecting();
-   }
-
-   private boolean isOnline() {
-      Runtime runtime = Runtime.getRuntime();
-      try {
-         Process ipProcess = runtime.exec("/system/bin/ping -c 1 8.8.8.8");
-         int     exitValue = ipProcess.waitFor();
-         return (exitValue == 0);
-      } catch (IOException e)          { e.printStackTrace(); }
-      catch (InterruptedException e) { e.printStackTrace(); }
-      return false;
+            // signal swipe refresh has finished
+            mSwipeContainer.setRefreshing(false);
+         }
+      });
    }
 
    public void addNewTweet(Tweet tweet) {
