@@ -8,14 +8,14 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+
+import org.json.JSONArray;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -28,6 +28,11 @@ abstract public class TweetListFragment extends Fragment {
    protected SwipeRefreshLayout mSwipeContainer;
    protected TwitterClient mClient;
    protected FloatingActionButton mFABCompose;
+   // one central List<Tweet> to store all tweets from the 3 Timeline (Home, Mentions and User),
+   // each with an identifier (timeline) to distinguish from each other
+   protected List<Tweet> mTweets;
+   protected TweetArrayAdapter mAdapter;
+   // private TweetRecyclerViewAdapter mAdapter;
 
    protected ListView mListView;
    /*
@@ -41,6 +46,11 @@ abstract public class TweetListFragment extends Fragment {
       super.onCreate(savedInstanceState);
       // get the singleton client
       mClient = TwitterApplication.getRestClient();
+      // create an ArrayList data source
+      mTweets = new ArrayList<>();
+      // construct an adapter from the data source
+      mAdapter = new TweetArrayAdapter(getActivity(), mTweets);
+      // mAdapter = new TweetRecyclerViewAdapter(getActivity(), mTweets);
    }
 
    // inflation logic
@@ -66,13 +76,24 @@ abstract public class TweetListFragment extends Fragment {
             DividerItemDecoration.VERTICAL_LIST);
       mListView.addItemDecoration(itemDecoration);
       */
+      // connect the adapter to the ListView
+      mListView.setAdapter(mAdapter);
+      // set up OnItemClickListener
+      mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+         @Override
+         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            Tweet tweet = mTweets.get(position);
+            DetailFragment detailFragment = DetailFragment.newInstance(tweet);
+            detailFragment.show(getFragmentManager(), "DETAIL_FRAGMENT");
+         }
+      });
       // set up onScrollListener for ListView
       mListView.setOnScrollListener(new ListViewScrollListener() {
          @Override
          public boolean onLoadMore(int page, int totalItemsCount) {
             // triggered only when new data needs to be appended to the list, in this case when
             // lowestId is not 0.
-            fillTimeline(findLowestId(getTweets()));
+            fillTimeline(findLowestId(mTweets));
             // true only if more data is actually being loaded; false otherwise
             return true;
          }
@@ -95,15 +116,66 @@ abstract public class TweetListFragment extends Fragment {
 
    abstract protected void populateTimeline(final long maxId);
 
-   abstract protected void loadFromDatabase();
-
-   abstract protected List<Tweet> getTweets();
+   abstract protected String timelineId();
 
    protected void fillTimeline(long maxId) {
       if (!isNetworkAvailable() || !isOnline())
          loadFromDatabase();
       else
          populateTimeline(maxId);
+   }
+
+   protected void onSuccessTimeline(long maxId, JSONArray response) {
+      // clear adapter and database on a fresh new feed of tweets
+      if (maxId == 0) {
+         Tweet.deleteAll(timelineId());
+         mAdapter.clear();
+      }
+      /*
+      int count = mAdapter.getItemCount();
+      if (maxId == 0) {
+         Tweet.deleteAll();
+         if (count > 0) {
+            mTweets.clear();
+            mAdapter.notifyItemRangeRemoved(0, count);
+         }
+      }
+      */
+      // create tweet objects (and save them to local database) from JSON feed from twitter.com
+      List<Tweet> tweets = Tweet.fromJSONArray(response, timelineId());
+      Log.d("NGUYEN", "getHomeTimeline() fetched " + tweets.size() + " tweets from twitter.com");
+      // with a load-more feed (endless scroll), just add the feed to the current list of feed
+      mTweets.addAll(tweets);
+      /*
+      count = mAdapter.getItemCount();
+      mTweets.addAll(tweets);
+      mAdapter.notifyItemRangeInserted(count, tweets.size());
+      */
+      // signal swipe refresh has finished
+      mSwipeContainer.setRefreshing(false);
+   }
+
+   private void loadFromDatabase() {
+      Log.d("NGUYEN", "NO NETWORK CONNECTION.");
+      mAdapter.clear();
+      /*
+      int count = mAdapter.getItemCount();
+      if (count > 0) {
+         mTweets.clear();
+         mAdapter.notifyItemRangeRemoved(0, count);
+      }
+      */
+      // load tweet feed from local database instead of from twitter.com
+      List<Tweet> tweets = Tweet.getAll(timelineId());
+      Log.d("NGUYEN", "fetched " + tweets.size() + " tweets from the database");
+      mAdapter.addAll(tweets);
+      /*
+      count = mAdapter.getItemCount();
+      mTweets.addAll(tweets);
+      mAdapter.notifyItemRangeInserted(count, tweets.size());
+      */
+      // signal swipe refresh has finished
+      mSwipeContainer.setRefreshing(false);
    }
 
    // this method finds the new lowest id, for subsequent fetches beyond the current 25 tweets
