@@ -94,7 +94,7 @@ public class ComposeActivity extends AppCompatActivity {
             final String status = text.getText().toString();
             if (!TextUtils.isEmpty(status)) {
                Log.d("NGUYEN", "tweeting status: " + status);
-               mClient.postStatus(status, null, new JsonHttpResponseHandler() {
+               mClient.postStatusUpdate(status, null, new JsonHttpResponseHandler() {
                   @Override
                   public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                      // compose a Tweet from the text and User data

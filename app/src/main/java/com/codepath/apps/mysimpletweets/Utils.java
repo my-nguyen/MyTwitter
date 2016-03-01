@@ -48,4 +48,12 @@ public class Utils {
 
       return relativeDate;
    }
+
+   public static void myLog(String json) {
+      for (int i = 0; i < json.length(); i += 4000)
+         if (i + 4000 < json.length())
+            Log.d("NGUYEN", json.substring(i, i+4000));
+         else
+            Log.d("NGUYEN", json.substring(i, json.length()));
+   }
 }

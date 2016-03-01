@@ -8,7 +8,6 @@ import android.support.v4.app.DialogFragment;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -146,7 +145,7 @@ public class ReplyFragment extends DialogFragment {
          public void onClick(View v) {
             final String status = text.getText().toString();
             if (!TextUtils.isEmpty(status)) {
-               client.postStatus(status, Long.toString(tweet.id), new JsonHttpResponseHandler() {
+               client.postStatusUpdate(status, Long.toString(tweet.id), new JsonHttpResponseHandler() {
                   @Override
                   public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                      // compose and save a Tweet from the JSONObject

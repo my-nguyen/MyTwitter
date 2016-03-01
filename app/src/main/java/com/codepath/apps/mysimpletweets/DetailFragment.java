@@ -15,7 +15,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.loopj.android.http.JsonHttpResponseHandler;
 
+import org.apache.http.Header;
+import org.json.JSONObject;
 import org.parceler.Parcels;
 
 import java.text.DateFormat;
@@ -31,18 +34,32 @@ import butterknife.ButterKnife;
  */
 public class DetailFragment extends DialogFragment implements ReplyFragment.ReplyFragmentListener {
    // find the subviews to fill with data in the template
-   @Bind(R.id.profile_image)        ImageView   profileImage;
-   @Bind(R.id.name)                 TextView    name;
-   @Bind(R.id.screen_name)          TextView    screenName;
-   @Bind(R.id.text)                 TextView    text;
-   @Bind(R.id.image)                ImageView   image;
-   @Bind(R.id.date_time)            TextView    dateTime;
-   @Bind(R.id.retweet_count)        TextView    retweetCount;
-   @Bind(R.id.retweet_count_label)  TextView    retweetCountLabel;
-   @Bind(R.id.favorite_count)       TextView    favoriteCount;
-   @Bind(R.id.favorite_count_label) TextView    favoriteCountLabel;
-   @Bind(R.id.separator2)           View        separator;
-   @Bind(R.id.reply)                ImageButton reply;
+   @Bind(R.id.profile_image)
+   ImageView profileImage;
+   @Bind(R.id.name)
+   TextView name;
+   @Bind(R.id.screen_name)
+   TextView screenName;
+   @Bind(R.id.text)
+   TextView text;
+   @Bind(R.id.image)
+   ImageView image;
+   @Bind(R.id.date_time)
+   TextView dateTime;
+   @Bind(R.id.retweet_count)
+   TextView retweetCount;
+   @Bind(R.id.retweet_count_label)
+   TextView retweetCountLabel;
+   @Bind(R.id.favorite_count)
+   TextView favoriteCount;
+   @Bind(R.id.favorite_count_label)
+   TextView favoriteCountLabel;
+   @Bind(R.id.separator2)
+   View separator;
+   @Bind(R.id.reply)
+   ImageButton reply;
+   @Bind(R.id.retweet)
+   ImageButton retweet;
 
    // empty constructor required by DialogFragment
    public DetailFragment() {
@@ -113,6 +130,22 @@ public class DetailFragment extends DialogFragment implements ReplyFragment.Repl
             ReplyFragment replyFragment = ReplyFragment.newInstance(tweet);
             replyFragment.setTargetFragment(DetailFragment.this, 300);
             replyFragment.show(getFragmentManager(), "REPLY_FRAGMENT");
+         }
+      });
+      // set up the retweet button
+      retweet.setOnClickListener(new View.OnClickListener() {
+         @Override
+         public void onClick(View v) {
+            Log.d("NGUYEN", "DetailFragment.setOnClickListener.onClick");
+            TwitterClient client = TwitterApplication.getRestClient();
+            client.postStatusRetweet(tweet.id, new JsonHttpResponseHandler() {
+               @Override
+               public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                  Utils.myLog(response.toString());
+                  // retweetCount.setText("" + (tweet.retweetCount + 1));
+                  // retweet.setColorFilter(Color.GREEN);
+               }
+            });
          }
       });
    }
