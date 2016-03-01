@@ -95,7 +95,7 @@ public class HomeTimelineFragment extends TweetListFragment {
          public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
             // clear adapter and database on a fresh new feed of tweets
             if (maxId == 0) {
-               Tweet.deleteAll();
+               Tweet.deleteAll("HOME");
                mAdapter.clear();
             }
                /*
@@ -109,7 +109,7 @@ public class HomeTimelineFragment extends TweetListFragment {
                }
                */
             // create tweet objects (and save them to local database) from JSON feed from twitter.com
-            List<Tweet> tweets = Tweet.fromJSONArray(response);
+            List<Tweet> tweets = Tweet.fromJSONArray(response, "HOME");
             Log.d("NGUYEN", "getHomeTimeline() fetched " + tweets.size() + " tweets from twitter.com");
             // with a load-more feed (endless scroll), just add the feed to the current list of feed
             mTweets.addAll(tweets);
@@ -136,7 +136,7 @@ public class HomeTimelineFragment extends TweetListFragment {
          }
          */
       // load tweet feed from local database instead of from twitter.com
-      List<Tweet> tweets = Tweet.getAll();
+      List<Tweet> tweets = Tweet.getAll("HOME");
       Log.d("NGUYEN", "fetched " + tweets.size() + " tweets from the database");
       mAdapter.addAll(tweets);
          /*

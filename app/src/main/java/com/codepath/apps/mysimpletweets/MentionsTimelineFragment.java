@@ -47,7 +47,7 @@ public class MentionsTimelineFragment extends TweetListFragment {
       Log.d("NGUYEN", "NO NETWORK CONNECTION.");
       mAdapter.clear();
       // load tweet feed from local database instead of from twitter.com
-      List<Tweet> tweets = Tweet.getAll();
+      List<Tweet> tweets = Tweet.getAll("MENTIONS");
       Log.d("NGUYEN", "fetched " + tweets.size() + " tweets from the database");
       mAdapter.addAll(tweets);
       // signal swipe refresh has finished
@@ -60,7 +60,7 @@ public class MentionsTimelineFragment extends TweetListFragment {
          @Override
          public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
             // create tweet objects (and save them to local database) from JSON feed from twitter.com
-            List<Tweet> tweets = Tweet.fromJSONArray(response);
+            List<Tweet> tweets = Tweet.fromJSONArray(response, "MENTIONS");
             Log.d("NGUYEN", "getMentionsTimeline() fetched " + tweets.size() + " tweets from twitter.com");
             // with a load-more feed (endless scroll), just add the feed to the current list of feed
             mAdapter.addAll(tweets);

@@ -150,7 +150,7 @@ public class ReplyFragment extends DialogFragment {
                   @Override
                   public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                      // compose and save a Tweet from the JSONObject
-                     Tweet tweet = Tweet.fromJSONObject(response);
+                     Tweet tweet = Tweet.fromJSONObject(response, "HOME");
                      // make a callback on DetailFragment to pass the Tweet object back to the
                      // parent fragment
                      ReplyFragmentListener listener = (ReplyFragmentListener) getTargetFragment();

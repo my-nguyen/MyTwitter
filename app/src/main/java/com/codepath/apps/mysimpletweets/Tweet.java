@@ -35,6 +35,8 @@ public class Tweet extends Model {
    public String displayUrl;
    @Column(name = "media_url")
    public String mediaUrl;
+   @Column(name = "timeline")
+   public String timeline;
    @Column(name = "user", onUpdate = Column.ForeignKeyAction.CASCADE, onDelete = Column.ForeignKeyAction.CASCADE)
    public User user;
 
@@ -49,22 +51,23 @@ public class Tweet extends Model {
       builder.append("<").append(text).append("> <").append(id).append("> <").append(createdAt)
             .append("> <").append(retweetCount).append("> <").append(favoriteCount)
             .append("> <").append(displayUrl).append("> <").append(mediaUrl)
-            .append(">\n").append(user);
+            .append("> <").append(timeline).append(">\n").append(user);
       return builder.toString();
    }
 
-   public static List<Tweet> getAll() {
+   public static List<Tweet> getAll(String timeline) {
       // return new Select().from(Tweet.class).orderBy("created_at DESC").limit(100).execute();
-      return new Select().from(Tweet.class).orderBy("remote_id DESC").limit(100).execute();
+      return new Select().from(Tweet.class).where("timeline = ?", timeline)
+            .orderBy("remote_id DESC").limit(100).execute();
    }
 
-   public static void deleteAll() {
-      User.deleteAll();
-      new Delete().from(Tweet.class).execute();
+   public static void deleteAll(String timeline) {
+      // User.deleteAll();
+      new Delete().from(Tweet.class).where("timeline = ?", timeline).execute();
    }
 
    // this method deserializes a JSON object into a Tweet object and saves it into local database
-   public static Tweet fromJSONObject(JSONObject jsonObject) {
+   public static Tweet fromJSONObject(JSONObject jsonObject, String timeline) {
       Tweet tweet = new Tweet();
       try {
          tweet.id = jsonObject.getLong("id");
@@ -100,6 +103,7 @@ public class Tweet extends Model {
             // "RT @FOXSports: 'Boy in plastic bag' Messi jersey receives real, signed version. foxs.pt/1TB5y05 (Pic: @UNICEFargentina) https://t.c…"
             tweet.text = text;
          }
+         tweet.timeline = timeline;
          tweet.user = User.findOrCreateFromJSONObject(jsonObject.getJSONObject("user"));
          tweet.save();
       } catch (JSONException e) {
@@ -108,12 +112,12 @@ public class Tweet extends Model {
       return tweet;
    }
 
-   public static List<Tweet> fromJSONArray(JSONArray jsonArray) {
+   public static List<Tweet> fromJSONArray(JSONArray jsonArray, String timeline) {
       List<Tweet> tweets = new ArrayList<>();
       for (int i = 0; i < jsonArray.length(); i++) {
          try {
             JSONObject jsonObject = jsonArray.getJSONObject(i);
-            Tweet tweet = fromJSONObject(jsonObject);
+            Tweet tweet = fromJSONObject(jsonObject, timeline);
             if (tweet != null)
                tweets.add(tweet);
          } catch (JSONException e) {
