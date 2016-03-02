@@ -11,7 +11,7 @@ import android.support.v7.app.AppCompatActivity;
  */
 public class QueryResultActivity extends AppCompatActivity {
    public static Intent newIntent(Context context, String query) {
-      Intent intent = new Intent(context, ProfileActivity.class);
+      Intent intent = new Intent(context, QueryResultActivity.class);
       intent.putExtra("QUERY", query);
       return intent;
    }

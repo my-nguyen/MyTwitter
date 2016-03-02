@@ -9,8 +9,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.List;
-
 /**
  * Created by My on 2/25/2016.
  */

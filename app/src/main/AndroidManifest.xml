@@ -62,6 +62,9 @@
         <activity
             android:name=".FollowerActivity"
             android:label="Followers"/>
+        <activity
+            android:name=".QueryResultActivity"
+            android:label="Query"/>
     </application>
 
 </manifest>
