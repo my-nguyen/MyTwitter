@@ -4,10 +4,12 @@ import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -22,18 +24,18 @@ public class TimelineActivity extends AppCompatActivity implements ComposeFragme
       setContentView(R.layout.activity_timeline);
 
       // get the viewpager
-      ViewPager viewPager = (ViewPager)findViewById(R.id.viewpager);
+      ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
       // set the viewpager adapter for the pager
       viewPager.setAdapter(new TweetPagerAdapter(getSupportFragmentManager()));
       // find the pager sliding tabstrip
-      PagerSlidingTabStrip tabStrip = (PagerSlidingTabStrip)findViewById(R.id.tabs);
+      PagerSlidingTabStrip tabStrip = (PagerSlidingTabStrip) findViewById(R.id.tabs);
       // attach the pager tabstrip to the viewpager
       tabStrip.setViewPager(viewPager);
    }
 
    // return the order of the fragments in the view pager
    public class TweetPagerAdapter extends FragmentPagerAdapter {
-      private String[] tabTitles = { "Home", "Mentions" };
+      private String[] tabTitles = {"Home", "Mentions"};
 
       // Adapter gets the manager to insert or remove fragment from activity
       public TweetPagerAdapter(FragmentManager manager) {
@@ -67,13 +69,31 @@ public class TimelineActivity extends AppCompatActivity implements ComposeFragme
    @Override
    public boolean onCreateOptionsMenu(Menu menu) {
       getMenuInflater().inflate(R.menu.timeline, menu);
-      return true;
+      MenuItem searchItem = menu.findItem(R.id.action_search);
+      final SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+      searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+         @Override
+         public boolean onQueryTextSubmit(String query) {
+            // perform query here
+            Intent intent = QueryResultActivity.newIntent(TimelineActivity.this, query);
+            startActivity(intent);
+            // workaround to avoid issues with some emulators and keyboard devices firing twice if a
+            // keyboard enter is used. see https://code.google.com/p/android/issues/detail?id=24599
+            return true;
+         }
+
+         @Override
+         public boolean onQueryTextChange(String newText) {
+            return false;
+         }
+      });
+      return super.onCreateOptionsMenu(menu);
    }
 
    @Override
    public boolean onOptionsItemSelected(MenuItem item) {
       switch (item.getItemId()) {
-         case R.id.profile:
+         case R.id.action_profile:
             Intent intent = ProfileActivity.newIntent(this, null);
             startActivity(intent);
             return true;
@@ -83,10 +103,11 @@ public class TimelineActivity extends AppCompatActivity implements ComposeFragme
    }
 
    MenuItem mProgressAction;
+
    @Override
    public boolean onPrepareOptionsMenu(Menu menu) {
       // store instance of the menu item containing progress
-      mProgressAction = menu.findItem(R.id.progress);
+      mProgressAction = menu.findItem(R.id.action_progress);
       // extract the action-view from the menu item
       ProgressBar bar = (ProgressBar) MenuItemCompat.getActionView(mProgressAction);
       // return to finish
